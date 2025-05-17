@@ -1,4 +1,4 @@
-import {Component, inject, input, OnInit} from '@angular/core';
+import {Component, effect, inject, input, OnInit, signal} from '@angular/core';
 import {LocalStorageService} from "../local-storage.service";
 import {ButtonComponent} from "../button/button.component";
 
@@ -29,9 +29,8 @@ export const LanguageDetails: Record<string, Record<string, LanguageCode | strin
     `,
 })
 export class LanguageChangeComponent implements OnInit {
-    storageService = inject(LocalStorageService);
-
     language = input.required<string>();
+    storageService = inject(LocalStorageService);
     languageDetails!: Record<string, string>;
 
     ngOnInit(): void {

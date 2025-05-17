@@ -16,7 +16,6 @@ export type QueryParams = {
     sortBy?: `${SortCriteria}.${SortDirection}`,
 }
 
-
 @Injectable({
     providedIn: "root"
 })
@@ -76,10 +75,13 @@ export class MovieService {
             }
     };
 
-    async getAllMovies(categoryKey: CategoryKey, queryParams: QueryParams = {}) {
+    async getAllMovies(categoryKey: CategoryKey, queryParams:  QueryParams= {}) {
+        const additionalParams = new URLSearchParams();
+        for (const [key, value] of Object.entries(queryParams)) {
+            additionalParams.append(key, String(value));
+        }
         const categoryParams = this.movieCategory[categoryKey].params;
-        const additionalParams = new URLSearchParams(queryParams as Record<string, string>).toString();
-        const input = `${this.url}?${[categoryParams, additionalParams].filter(Boolean).join("&")}`;
+        const input = `${this.url}?${[categoryParams, additionalParams.toString()].filter(Boolean).join("&")}`;
         const response = await fetch(input, this.init);
         const json = await response.json();
         return json ? json.results : [];

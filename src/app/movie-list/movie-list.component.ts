@@ -1,10 +1,8 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {CommonModule} from "@angular/common";
-import {RouterLink} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MovieService} from "../movie.service";
-import {LanguageCode} from "../language-change/language-change.component";
-import { ActivatedRoute } from '@angular/router';
-import { Observable, switchMap } from 'rxjs';
+import {LocalStorageService} from "../local-storage.service";
 
 @Component({
     selector: 'app-movie-list',
@@ -43,10 +41,12 @@ import { Observable, switchMap } from 'rxjs';
     `,
 })
 export class MovieListComponent implements OnInit {
-    display = "movie-list";
-    movieService = inject(MovieService);
-    movieList!: any[];
     private readonly route = inject(ActivatedRoute);
+    movieService = inject(MovieService);
+    storageService = inject(LocalStorageService);
+
+    display = "movie-list";
+    movieList!: any[];
 
     ngOnInit() {
         const number = Number(this.route.snapshot.paramMap.get('page'));
@@ -55,8 +55,11 @@ export class MovieListComponent implements OnInit {
 
     constructor() {
         (async () => {
-            this.movieList = await this.movieService.getAllMovies("upcoming", {language:LanguageCode.english});
+            this.movieList = await this.movieService.getAllMovies("upcoming", {
+                language: this.storageService.getItem("language")
+            });
         })();
     }
+
     protected readonly Math = Math;
 }
