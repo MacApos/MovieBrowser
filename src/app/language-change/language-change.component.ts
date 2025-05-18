@@ -1,4 +1,4 @@
-import {Component, effect, inject, input, OnInit, signal} from '@angular/core';
+import {Component, effect, inject, input,  OnInit, signal} from '@angular/core';
 import {LocalStorageService} from "../local-storage.service";
 import {ButtonComponent} from "../button/button.component";
 
@@ -40,4 +40,6 @@ export class LanguageChangeComponent implements OnInit {
     handleChangeLanguage() {
         this.storageService.setItem("language", this.languageDetails["code"]);
     }
+
+
 }

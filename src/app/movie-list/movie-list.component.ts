@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {afterNextRender, Component, DoCheck, effect, inject, OnInit} from '@angular/core';
 import {CommonModule} from "@angular/common";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MovieService} from "../movie.service";
@@ -44,21 +44,21 @@ export class MovieListComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     movieService = inject(MovieService);
     storageService = inject(LocalStorageService);
-
     display = "movie-list";
     movieList!: any[];
 
-    ngOnInit() {
-        const number = Number(this.route.snapshot.paramMap.get('page'));
-        console.log(number);
+    constructor() {
+        effect(async () => {
+            this.movieList = await this.movieService.getAllMovies("upcoming", {
+                language: this.storageService.storageSignal().language
+            });
+        });
     }
 
-    constructor() {
-        (async () => {
-            this.movieList = await this.movieService.getAllMovies("upcoming", {
-                language: this.storageService.getItem("language")
-            });
-        })();
+    ngOnInit(): void {
+        this.route.params.subscribe(u => {
+            this.storageService.updateState("page", u["page"]);
+        });
     }
 
     protected readonly Math = Math;

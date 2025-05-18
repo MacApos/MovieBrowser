@@ -36,7 +36,6 @@ import {CategoryKey, MovieService} from "../movie.service";
             </nav>
 
             <div class="position-absolute z-1 top-0 h-100" id="category-dropdown">
-
                 <div id="category-dropdown-4-col">
                     <div class="category-dropdown-grid" [attr.data-index]="1">
                         <button class="w-100 btn btn-info rounded-5"
@@ -70,9 +69,7 @@ import {CategoryKey, MovieService} from "../movie.service";
 export class NavBarComponent {
     movieService = inject(MovieService);
     movieCategory = this.movieService.movieCategory
-
     movieCategoryList = Object.keys(this.movieCategory).map(key=>
         this.movieCategory[key as CategoryKey].name);
     middleIndex = this.movieCategoryList.length / 2;
-
 }

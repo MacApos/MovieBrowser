@@ -2,7 +2,13 @@ import {inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
 import {isPlatformBrowser} from "@angular/common";
 import {Theme} from "./mode-toggle/mode-toggle.component";
 import {LanguageCode} from "./language-change/language-change.component";
-import {BehaviorSubject} from 'rxjs/internal/BehaviorSubject';
+
+interface StorageType {
+    [key: string]: string | number;
+
+    theme: Theme,
+    language: LanguageCode,
+}
 
 @Injectable({
     providedIn: 'root'
@@ -10,9 +16,11 @@ import {BehaviorSubject} from 'rxjs/internal/BehaviorSubject';
 export class LocalStorageService {
     platformId = inject(PLATFORM_ID);
     isBrowser = isPlatformBrowser(this.platformId);
-    initStorage: Record<string, Theme | LanguageCode | string | number> = {
+    initStorage: StorageType = {
         theme: Theme.dark,
         language: LanguageCode.english,
+    };
+    state = {
         page: 1
     };
 
@@ -23,6 +31,7 @@ export class LocalStorageService {
     };
 
     storageSignal = signal(this.initStorage);
+    stateSignal = signal(this.state);
 
     initiateStorage() {
         if (this.isBrowser) {
@@ -51,12 +60,15 @@ export class LocalStorageService {
         }
     }
 
+    updateState(keyName: string, keyValue: any) {
+        this.stateSignal.update(current => ({...current, [keyName]: keyValue}));
+    }
+
     setItem(keyName: string, keyValue: any): void {
         if (!keyValue || !this.initStorageGuard[keyName](keyValue)) {
             return;
         }
-        // this.storageSignal.update(current => ({...current, [keyName]: keyValue}));
-        console.log(keyValue);
+        this.storageSignal.update(current => ({...current, [keyName]: keyValue}));
         if (this.isBrowser) {
             localStorage.setItem(keyName, keyValue);
         }
