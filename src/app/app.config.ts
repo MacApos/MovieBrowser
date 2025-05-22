@@ -1,16 +1,15 @@
-import {ApplicationConfig, inject, PLATFORM_ID, provideAppInitializer, provideZoneChangeDetection} from '@angular/core';
-import {provideRouter, withComponentInputBinding} from '@angular/router';
+import {ApplicationConfig, inject, provideAppInitializer, provideZoneChangeDetection} from '@angular/core';
+import {provideRouter } from '@angular/router';
 
 import {routes} from './app.routes';
 import {provideClientHydration, withEventReplay} from '@angular/platform-browser';
-import {LocalStorageService} from "./local-storage.service";
-import {WINDOW} from "./window.token";
+import {StorageService} from "./storage.service";
 import {provideHttpClient} from "@angular/common/http";
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideAppInitializer(() => {
-            const storageService = inject(LocalStorageService);
+            const storageService = inject(StorageService);
             storageService.initiateStorage();
         }),
         provideHttpClient(),

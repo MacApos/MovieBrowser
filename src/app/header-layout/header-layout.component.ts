@@ -20,7 +20,6 @@ import {RouterOutlet} from "@angular/router";
             </div>
         </div>
     `,
-    styles: ``
 })
 export class HeaderLayoutComponent {
 }

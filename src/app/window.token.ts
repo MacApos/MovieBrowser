@@ -4,6 +4,6 @@ import {isPlatformBrowser} from "@angular/common";
 export const WINDOW = new InjectionToken<Window | null>("WindowToken", {
     factory: () => {
         const platformId = inject(PLATFORM_ID);
-        return isPlatformBrowser(platformId) ? window : null;
+        return isPlatformBrowser(platformId) && window ? window : null ;
     }
 });

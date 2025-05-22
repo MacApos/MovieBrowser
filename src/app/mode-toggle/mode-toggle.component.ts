@@ -1,6 +1,6 @@
 import {afterRender, Component, inject, OnInit, output, signal} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
-import {LocalStorageService} from "../local-storage.service";
+import {StorageService} from "../storage.service";
 import {ButtonComponent} from "../button/button.component";
 
 declare function setTheme(theme: string): void;
@@ -20,7 +20,7 @@ export enum Theme {
     `,
 })
 export class ModeToggleComponent {
-    storageService = inject(LocalStorageService);
+    storageService = inject(StorageService);
     theme: any = this.storageService.initStorage["theme"];
 
     handleChangeTheme() {

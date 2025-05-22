@@ -2,10 +2,11 @@ import {Injectable} from "@angular/core";
 import {environment} from "../environments/environment";
 import {LanguageCode} from "./language-change/language-change.component";
 
-export type CategoryKey = "nowPlaying" | "popular" | "topRated" | "upcoming"
+export type CategoryPath = "now-playing" | "popular" | "top-rated" | "upcoming"
+
 export type CategoryDetails = {
     name: string,
-    path: string,
+    path: CategoryPath,
     params: string,
 }
 export type SortCriteria = "popularity" | "title" | "vote_average" | "primary_release_date";
@@ -13,56 +14,39 @@ export type SortDirection = "asc" | "desc"
 export type QueryParams = {
     language?: LanguageCode,
     page?: number,
-    sortBy?: `${SortCriteria}.${SortDirection}`,
+    sort_by?: `${SortCriteria}.${SortDirection}`,
 }
 
 @Injectable({
     providedIn: "root"
 })
 export class MovieService {
-    movieCategory: Record<CategoryKey, CategoryDetails> = {
-        nowPlaying: {
-            params: "&with_release_type=2|3&release_date.gte={min_date}&release_date.lte={max_date}",
+    previousDate = new Date();
+    currentFormattedDate = this.formatDate(new Date());
+    previousFormattedDate = this.formatDate(new Date(this.previousDate.setDate(this.previousDate.getDate()-60)));
+
+    movieCategory: Record<CategoryPath, CategoryDetails> = {
+        "now-playing": {
+            params: `primary_release_date.gte=${this.previousFormattedDate}&primary_release_date.lte=${this.currentFormattedDate}`,
             name: "Now Playing",
             path: "now-playing"
         },
-        popular: {
+        "popular": {
             params: "",
             name: "Popular",
             path: "popular"
         },
-        topRated: {
-            params: "&without_genres=99,10755&vote_count.gte=200",
+        "top-rated": {
+            params: "without_genres=99,10755&vote_count.gte=850&sort_by=vote_average.desc",
             name: "Top Rated",
             path: "top-rated"
         },
-        upcoming: {
-            params: "&with_release_type=2|3&release_date.gte=",
+        "upcoming": {
+            params: `with_release_type=2|3&primary_release_date.gte=${this.currentFormattedDate}`,
             name: "Upcoming",
             path: "upcoming"
         }
     };
-
-    constructor() {
-        // Object.keys(this.movieCategory).forEach((key) => {
-        //     const castedKey = key as CategoryKey;
-        //     const formattedName = key.replace(/([A-Z])/g, " $1");
-        //     this.movieCategory[castedKey] = {
-        //         name: formattedName[0].toUpperCase() + formattedName.slice(1),
-        //         path: formattedName.replace(" ", "-").toLowerCase(),
-        //         ...this.movieCategory[castedKey]
-        //     };
-        // });
-
-        const today = new Date();
-
-        const padStart = (num: number) => {
-            return String(num).padStart(2, '0');
-        };
-
-        this.movieCategory.upcoming.params +=
-            `${today.getFullYear()}-${padStart(today.getMonth() + 1)}-${padStart(today.getDate())}`;
-    }
 
     url = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false";
     imageUrl = "https://image.tmdb.org/t/p";
@@ -75,13 +59,24 @@ export class MovieService {
             }
     };
 
-    async getAllMovies(categoryKey: CategoryKey, queryParams:  QueryParams= {}) {
-        const additionalParams = new URLSearchParams();
+    formatDate(date: Date) {
+        const padStart = (num: number) => {
+            return String(num).padStart(2, '0');
+        };
+        return `${date.getFullYear()}-${padStart(date.getMonth() + 1)}-${padStart(date.getDate())}`;
+    }
+
+    async getAllMovies(categoryPath: CategoryPath, queryParams: QueryParams = {}) {
+        const params = new URLSearchParams(this.movieCategory[categoryPath].params);
         for (const [key, value] of Object.entries(queryParams)) {
-            additionalParams.append(key, String(value));
+            if (params.has(key)) {
+                params.delete(key);
+            }
+            params.append(key, String(value));
         }
-        const categoryParams = this.movieCategory[categoryKey].params;
-        const input = `${this.url}?${[categoryParams, additionalParams.toString()].filter(Boolean).join("&")}`;
+        params.sort();
+        const input = `${this.url}&${params.toString()}`;
+        console.log(input);
         const response = await fetch(input, this.init);
         const json = await response.json();
         return json ? json.results : [];

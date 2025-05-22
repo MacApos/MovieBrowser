@@ -1,4 +1,4 @@
-import {Component, Input, input, InputSignal, OnInit} from '@angular/core';
+import {Component,  input, InputSignal, OnInit} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 
 @Component({
@@ -19,10 +19,9 @@ import {NgOptimizedImage} from "@angular/common";
            }
        </button>
    `,
-    styles: ``
 })
 export class ButtonComponent implements OnInit {
-    icon = input.required();
+    icon:InputSignal<string>  = input.required();
     fill = input(false);
     dimensions = input([0, 0]);
     action: InputSignal<(() => void)> = input(() => {});

@@ -1,5 +1,5 @@
 import {Component, effect, inject, input,  OnInit, signal} from '@angular/core';
-import {LocalStorageService} from "../local-storage.service";
+import {StorageService} from "../storage.service";
 import {ButtonComponent} from "../button/button.component";
 
 export enum LanguageCode {
@@ -30,7 +30,7 @@ export const LanguageDetails: Record<string, Record<string, LanguageCode | strin
 })
 export class LanguageChangeComponent implements OnInit {
     language = input.required<string>();
-    storageService = inject(LocalStorageService);
+    storageService = inject(StorageService);
     languageDetails!: Record<string, string>;
 
     ngOnInit(): void {

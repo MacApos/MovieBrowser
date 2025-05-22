@@ -1,10 +1,13 @@
 import {
-    Component, computed, DoCheck, HostListener, inject
+    Component, computed, DoCheck, HostListener, inject, input, InputSignal
 } from '@angular/core';
 import {NgClass, NgForOf, NgTemplateOutlet} from "@angular/common";
 import {WINDOW} from "../window.token";
-import {LocalStorageService} from "../local-storage.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {StorageService} from "../storage.service";
+import {ActivatedRoute, NavigationExtras, Router} from "@angular/router";
+import {pageNotFound} from "../app.routes";
+
+export type PageNavigationFn = (page: number) => { commands: any[], extras?: NavigationExtras }
 
 export enum WindowWidth {
     sm = 576,
@@ -59,14 +62,14 @@ export enum WindowWidth {
             <ng-container [ngTemplateOutlet]="chevron"
                           [ngTemplateOutletContext]="{
                               d:'M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708',
-                              disabled:activePage()==number,
+                              disabled:activePage()==maxPage,
                               action:handleNext}"/>
 
             <ng-container [ngTemplateOutlet]="chevron"
                           [ngTemplateOutletContext]="{
                               width:40,
                               d:'M4.146 3.646a.5.5 0 0 0 0 .708L7.793 8l-3.647 3.646a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708 0M11.5 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13a.5.5 0 0 1 .5-.5',
-                              disabled:activePage()==number,
+                              disabled:activePage()==maxPage,
                               action:handleLast}"/>
         </div>
     `,
@@ -79,11 +82,12 @@ export enum WindowWidth {
 export class PaginationComponent implements DoCheck {
     private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
-    storageService = inject(LocalStorageService);
+    storageService = inject(StorageService);
     activePage = computed(() => Number(this.storageService.stateSignal().page));
+    pageNavigation: InputSignal<PageNavigationFn> = input.required();
+    maxPage = 30;
     win = inject(WINDOW);
     range = this.getRange(this.win);
-    number = 16;
     pages!: number[];
 
     @HostListener('window:resize', ['$event'])
@@ -92,17 +96,22 @@ export class PaginationComponent implements DoCheck {
     }
 
     ngDoCheck() {
-        this.pages = this.getPagination(this.range, this.number, this.activePage());
+        const activePage = this.activePage();
+        if (activePage > this.maxPage) {
+            this.router.navigate([pageNotFound]);
+        }
+        this.pages = this.getPagination(this.range, this.maxPage, activePage);
     }
 
     handleClick = (page: number) => {
-        this.router.navigate([page], {relativeTo: this.route});
+        const {commands, extras} = {...this.pageNavigation()(page)};
+        this.router.navigate(commands, extras);
     };
 
     handlePrev = () => this.handleClick(Math.max(1, this.activePage() - 1));
-    handleNext = () => this.handleClick(Math.min(this.activePage() + 1, this.number));
+    handleNext = () => this.handleClick(Math.min(this.activePage() + 1, this.maxPage));
     handleFirst = () => this.handleClick(1);
-    handleLast = () => this.handleClick(this.number);
+    handleLast = () => this.handleClick(this.maxPage);
 
     getRange(window: Window | null) {
         if (window) {

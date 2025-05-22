@@ -36,7 +36,6 @@ import {NgForOf} from "@angular/common";
 <!--      </div>-->
 <!--    </div>-->
   `,
-  styles: ``
 })
 export class MovieDetailsComponent {
 
