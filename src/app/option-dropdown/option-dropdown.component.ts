@@ -1,16 +1,17 @@
 import {Component} from '@angular/core';
 import {ButtonComponent} from "../button/button.component";
-import {NgClass, NgStyle} from "@angular/common";
+import {NgForOf, NgStyle} from "@angular/common";
 
 @Component({
-    selector: 'app-options-dropdown',
+    selector: 'app-option-dropdown',
     imports: [
         ButtonComponent,
-        NgClass,
-        NgStyle
+        NgStyle,
+        NgForOf
     ],
     template: `
-        <div class="position-fixed bottom-0 end-0 py-2 z-3" id="option">
+
+        <div class="position-fixed bottom-0 end-0 my-3 z-3" id="option">
             <div class="position-relative d-flex justify-content-center align-items-center" id="option-container">
                 <app-button-component icon="arrow-left"
                                       [attributes]="{disabled:'disabled', class:'btn-info opacity-100'}"
@@ -18,15 +19,18 @@ import {NgClass, NgStyle} from "@angular/common";
                 <div class="position-absolute z-n1 d-flex gap-2 justify-content-start align-items-center bg-danger"
                      [ngStyle]="{'overflow': overflow ? 'visible' : 'hidden'}" id="option-dropdown">
                     <app-button-component icon="list" [attributes]="{ class:'btn-success'}" id="display"/>
-                    <div class="d-flex justify-content-center align-items-end gap-2 position-relative bg-info" id="sort"
-                         (mouseenter)="overflow=true" (mouseleave)="overflow=false">
+                    <div class="d-flex justify-content-center align-items-end gap-2 position-relative bg-info w-100"
+                         id="sort"
+                    >
+                        <!--                         (mouseenter)="overflow=true" (mouseleave)="overflow=false"-->
+
                         <app-button-component icon="funnel-fill" [attributes]="{ class:'btn-success'}"/>
-                        <ul class="m-0 bg-warning end-100 position-absolute">
-                            <li>sort1</li>
-                            <li>sort2</li>
-                            <li>sort2</li>
-                            <li>sort2</li>
-                        </ul>
+                            <ul class="m-0 position-absolute end-100 list-group" id="sort-option">
+                                <li class="list-group-item list-group-item-action list-group-item-warning"
+                                    *ngFor="let item of [1,2,3,4]">
+                                    {{ "item" + item }}
+                                </li>
+                            </ul>
                     </div>
                     <!--                    <div class="d-flex bg-info position-absolute top-0 end-0" id="sort">-->
                     <!--                        <ul class="m-0 bg-warning " >-->
@@ -41,5 +45,5 @@ import {NgClass, NgStyle} from "@angular/common";
     `,
 })
 export class OptionDropdownComponent {
-    overflow=false
+    overflow=true
 }

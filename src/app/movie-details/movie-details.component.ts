@@ -7,6 +7,7 @@ import {NgForOf} from "@angular/common";
     NgForOf
   ],
   template: `
+    <div>tests</div>
 <!--    <div class="" id="movie-list">-->
 <!--      <div class="card">-->
 <!--        <div class="row mx-0">-->

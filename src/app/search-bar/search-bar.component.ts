@@ -1,9 +1,7 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
-import {FetchService} from "../fetch.service";
-import {Observable} from "rxjs";
-import {Router} from "@angular/router";
-import {searchPage} from "../app.routes";
+import {ActivatedRoute, Router} from "@angular/router";
+import {RouterService} from "../router.service";
 
 @Component({
     selector: 'app-search-bar',
@@ -12,22 +10,28 @@ import {searchPage} from "../app.routes";
     ],
     template: `
         <form #searchBar="ngForm">
-            <input class="form-control border-emphasis border-2" [(ngModel)]="searchInput" name="searchInput"
-                   placeholder="Search"
-                   (ngModelChange)="searchMovie()"/>
+            <input class="form-control border-emphasis border-2" [(ngModel)]="query" name="query"
+                   placeholder="Search" (ngModelChange)="searchMovie()"/>
         </form>
     `,
     styles: ``
 })
-export class SearchBarComponent {
-    searchInput!: string;
+export class SearchBarComponent implements OnInit {
     router = inject(Router);
+    routerService = inject(RouterService);
+    route = inject(ActivatedRoute);
+    query !: string;
 
-    searchMovie() {
-        const input = this.searchInput.trim();
-        if (input.length > 3) {
-            this.router.navigate([searchPage, {q: input}]);
-        }
+    ngOnInit(): void {
+        this.route.queryParams.subscribe(queryParams => this.query = queryParams['query']);
     }
 
+    searchMovie() {
+        const query = this.query.trim();
+        const path = this.routerService.getUrlSegment(0);
+        if (path != this.routerService.searchPage && query.length < 3) {
+            return;
+        }
+        this.routerService.navigate([this.routerService.searchPage], {queryParams: {query, page: 1}});
+    }
 }

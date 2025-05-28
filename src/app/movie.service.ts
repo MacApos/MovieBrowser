@@ -1,20 +1,22 @@
-import {Injectable} from "@angular/core";
+import { Injectable} from "@angular/core";
 import {environment} from "../environments/environment";
 import {LanguageCode} from "./language-change/language-change.component";
 
 export type CategoryPath = "now-playing" | "popular" | "top-rated" | "upcoming"
+type SortCriteria = "popularity" | "title" | "vote_average" | "primary_release_date";
+type SortDirection = "asc" | "desc"
+export type SortParam = `${SortCriteria}.${SortDirection}`
 
 export type CategoryDetails = {
     name: string,
     path: CategoryPath,
     params: string,
 }
-export type SortCriteria = "popularity" | "title" | "vote_average" | "primary_release_date";
-export type SortDirection = "asc" | "desc"
+
 export type QueryParams = {
     language?: LanguageCode,
     page?: number,
-    sort_by?: `${SortCriteria}.${SortDirection}`,
+    sort_by?: SortParam,
 }
 
 @Injectable({
@@ -23,7 +25,7 @@ export type QueryParams = {
 export class MovieService {
     previousDate = new Date();
     currentFormattedDate = this.formatDate(new Date());
-    previousFormattedDate = this.formatDate(new Date(this.previousDate.setDate(this.previousDate.getDate()-60)));
+    previousFormattedDate = this.formatDate(new Date(this.previousDate.setDate(this.previousDate.getDate() - 60)));
 
     movieCategory: Record<CategoryPath, CategoryDetails> = {
         "now-playing": {
@@ -66,17 +68,18 @@ export class MovieService {
         return `${date.getFullYear()}-${padStart(date.getMonth() + 1)}-${padStart(date.getDate())}`;
     }
 
-    async getAllMovies(categoryPath: CategoryPath, queryParams: QueryParams = {}) {
+    async getAllMovies(categoryPath: CategoryPath, queryParams?: QueryParams) {
         const params = new URLSearchParams(this.movieCategory[categoryPath].params);
-        for (const [key, value] of Object.entries(queryParams)) {
-            if (params.has(key)) {
-                params.delete(key);
+        if (queryParams) {
+            for (const [key, value] of Object.entries(queryParams)) {
+                if (params.has(key)) {
+                    params.delete(key);
+                }
+                params.append(key, String(value));
             }
-            params.append(key, String(value));
+            params.sort();
         }
-        params.sort();
         const input = `${this.url}&${params.toString()}`;
-        console.log(input);
         const response = await fetch(input, this.init);
         const json = await response.json();
         return json ? json.results : [];
@@ -92,3 +95,4 @@ export class MovieService {
 
 
 }
+

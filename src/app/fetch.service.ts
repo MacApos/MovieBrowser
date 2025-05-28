@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {QueryParams} from "./movie.service";
 import {environment} from "../environments/environment";
-import {map} from "rxjs";
+import {filter, map} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -25,7 +25,8 @@ export class FetchService {
             },
             headers: this.headers,
             observe: "response"
-        }).pipe(map((response: HttpResponse<Record<string, any>>) => {
+        })
+            .pipe(map((response: HttpResponse<Record<string, any>>) => {
                 // TODO: better error handling
                 if (response.body && response.body["total_pages"] && response.body["results"]) {
                     return {
@@ -33,9 +34,9 @@ export class FetchService {
                         results: response.body["results"]
                     };
                 }
-                return null;
+                return;
             }
-        ));
+        )).pipe(filter(response => response !== undefined));
 
     }
 }

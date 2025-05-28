@@ -2,18 +2,21 @@ import {inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
 import {isPlatformBrowser} from "@angular/common";
 import {Theme} from "./mode-toggle/mode-toggle.component";
 import {LanguageCode} from "./language-change/language-change.component";
-import {ActivatedRoute} from "@angular/router";
-import {PageNavigationFn} from "./pagination/pagination.component";
+import {CategoryPath, SortParam} from "./movie.service";
 
 interface StorageType {
     [key: string]: string | number;
+
     theme: Theme,
     language: LanguageCode,
 }
 
 interface StateType {
     page: number,
-    pageNavigationFn: PageNavigationFn,
+    path: CategoryPath,
+    sort_by: SortParam
+    language: LanguageCode,
+
 }
 
 @Injectable({
@@ -22,7 +25,6 @@ interface StateType {
 export class StorageService {
     platformId = inject(PLATFORM_ID);
     isBrowser = isPlatformBrowser(this.platformId);
-    route = inject(ActivatedRoute);
     initStorage: StorageType = {
         theme: Theme.dark,
         language: LanguageCode.english,
@@ -31,21 +33,19 @@ export class StorageService {
     initStorageGuard: Record<string, (param: string) => boolean> = {
         theme: param => Object.values(Theme).includes(param as Theme),
         language: param => Object.values(LanguageCode).includes(param as LanguageCode),
-        page: param => Number(param) > 0
     };
 
-    state:StateType = {
+    state: StateType = {
+        language: LanguageCode.english,
+        sort_by: "popularity.desc",
+
         page: 1,
-        pageNavigationFn:() => {
-            return {commands: []};
-        }
+        path: "now-playing",
     };
-
-    storageSignal = signal(this.initStorage);
     stateSignal = signal(this.state);
 
-    updateState(keyName: string, keyValue: any) {
-        this.stateSignal.update(current => ({...current, [keyName]: keyValue}));
+    updateState(update: object) {
+        this.stateSignal.update(current => ({...current, ...update}));
     }
 
     initiateStorage() {
@@ -75,12 +75,10 @@ export class StorageService {
         }
     }
 
-
     setItem(keyName: string, keyValue: any): void {
         if (!keyValue || !this.initStorageGuard[keyName](keyValue)) {
             return;
         }
-        this.storageSignal.update(current => ({...current, [keyName]: keyValue}));
         if (this.isBrowser) {
             localStorage.setItem(keyName, keyValue);
         }

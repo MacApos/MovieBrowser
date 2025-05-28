@@ -38,7 +38,9 @@ export class LanguageChangeComponent implements OnInit {
     }
 
     handleChangeLanguage() {
-        this.storageService.setItem("language", this.languageDetails["code"]);
+        const languageCode = this.languageDetails["code"];
+        this.storageService.setItem("language", languageCode);
+        this.storageService.updateState({language:languageCode})
     }
 
 

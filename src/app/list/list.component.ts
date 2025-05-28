@@ -32,7 +32,8 @@ import {filter} from "rxjs";
                                 {{ movie["release_date"] }}
                             </p>
                             <div class="card-footer p-0 m-0 w-100"></div>
-                            <div class="d-flex flex-wrap justify-content-between align-items-center w-100" id="rating">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center w-100"
+                                 id="rating">
                                 @let voteAverage = Math.round(movie["vote_average"] * 10) / 10;
                                 <p>{{ voteAverage }}</p>
                                 <div class="d-flex position-relative">

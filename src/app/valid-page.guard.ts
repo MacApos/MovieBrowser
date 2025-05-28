@@ -1,34 +1,32 @@
 import {ActivatedRouteSnapshot, CanActivateFn, GuardResult, Router} from '@angular/router';
 import {inject} from "@angular/core";
-import {pageNotFound, searchPage, startPage} from "./app.routes";
+import {RouterService} from "./router.service";
 
-type guardFn = (router: Router, route: ActivatedRouteSnapshot) => GuardResult
+type guardFn = (router: Router, route: ActivatedRouteSnapshot, movieService: RouterService) => GuardResult
 
 export const guardFactory =
     (guard: guardFn): CanActivateFn =>
         (route: ActivatedRouteSnapshot) => {
             const router = inject(Router);
-            return guard(router, route);
+            const routerService = inject(RouterService);
+            return guard(router, route, routerService);
         };
 
-export const pageGuard: guardFn = (router, route) => {
-    const page = route.params["page"];
-    console.log(page);
-    if (isNaN(page) || page <= 0) {
-        return router.createUrlTree([pageNotFound]);
+export const pageGuard: guardFn = (router, route, routerService) => {
+    const number = route.params["page"] | route.params["id"];
+    if (isNaN(number) || number <= 0) {
+        return router.createUrlTree([routerService.pageNotFound]);
     }
     return true;
 };
 
-export const searchGuard = (router: Router, route: ActivatedRouteSnapshot) => {
-    const queryParams = route.queryParams;
-    const q = queryParams["q"];
-    const page = queryParams["page"] ?? "1";
-    if (!q || q === "" || page && (isNaN(page) || page <= 0)) {
-        return router.createUrlTree([pageNotFound]);
+export const searchGuard: guardFn = (router, route, routerService) => {
+    const {query, page} = route.queryParams;
+    if (query==undefined || page && (isNaN(page) || page <= 0)) {
+        return router.createUrlTree([routerService.pageNotFound]);
     }
-    if (q.length < 2) {
-        return router.createUrlTree([startPage]);
+    if (query.length < 2) {
+        return router.createUrlTree([routerService.startPage]);
     }
     return true;
 };
