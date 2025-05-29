@@ -110,7 +110,6 @@ export class PaginationComponent implements DoCheck {
         if (window) {
             const width = window.innerWidth;
             const number = width < WindowWidth.md ? 1 : Math.min(length, width < WindowWidth.lg ? 3 : 5);
-            console.log(number);
             return number;
         }
         return 1;

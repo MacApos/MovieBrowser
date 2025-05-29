@@ -1,14 +1,11 @@
-import {Route,  Routes} from '@angular/router';
+import {Route, Routes} from '@angular/router';
 import {HeaderLayoutComponent} from "./header-layout/header-layout.component";
-import {MovieService} from "./movie.service";
 import {guardFactory, pageGuard, searchGuard} from "./valid-page.guard";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
-import {RouteService} from "./route.service";
+import {SharedDataService} from "./shared-data.service";
 
-const movieService = new MovieService();
-const routeService = new RouteService();
-export const {movieCategory} = movieService;
-const {startPage,  searchPage} =routeService;
+const sharedDataService = new SharedDataService();
+const {startPage, searchPage, movieCategory} = sharedDataService;
 
 function redirectParams(path: string,
                         redirectTo = startPage,

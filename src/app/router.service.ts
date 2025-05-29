@@ -1,13 +1,13 @@
 import {inject, Injectable} from '@angular/core';
 import {NavigationExtras, Router} from "@angular/router";
-import {RouteService} from "./route.service";
+import {SharedDataService} from "./shared-data.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class RouterService {
     router = inject(Router);
-    routeService = inject(RouteService);
+    routeService = inject(SharedDataService);
     startPage!: string;
     pageNotFound!: string;
     searchPage !: string;

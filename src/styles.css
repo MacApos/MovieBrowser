@@ -121,18 +121,26 @@ p {
     fill: var(--bs-pagination-color);
 }
 
+.page-link.active, .active > .page-link {
+    z-index: 0;
+}
+
 .pagination-lg {
     --bs-pagination-font-size: var(--bs-btn-font-size-root);
 }
 
-/*5020*/
-.list-group {
-
-}
-
+/*5054*/
 .list-group-item {
     border-radius: inherit;
 }
+
+/*5311*/
+.list-group-item-warning {
+    --bs-list-group-bg: var(--bs-warning);
+    --bs-list-group-action-hover-bg: var(--bs-warning-border-subtle);
+    --bs-list-group-active-color: var(--bs-warning);
+}
+
 
 /*7638*/
 .border-dark-subtle-fixed {

@@ -5,6 +5,7 @@ import {LanguageChangeComponent} from "../language-change/language-change.compon
 import {MovieService} from "../movie.service";
 import {RouterLink} from "@angular/router";
 import {SearchBarComponent} from "../search-bar/search-bar.component";
+import {SharedDataService} from "../shared-data.service";
 
 @Component({
     selector: 'app-nav-bar',
@@ -94,7 +95,7 @@ export class NavBarComponent {
     height = 130;
     style = {top: `-${this.height / 2}px`};
 
-    movieService = inject(MovieService);
-    movieCategory = Object.values(this.movieService.movieCategory);
+    sharedDataService = inject(SharedDataService);
+    movieCategory = Object.values(this.sharedDataService.movieCategory);
     middleIndex = this.movieCategory.length / 2;
 }

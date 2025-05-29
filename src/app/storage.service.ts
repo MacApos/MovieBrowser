@@ -2,21 +2,17 @@ import {inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
 import {isPlatformBrowser} from "@angular/common";
 import {Theme} from "./mode-toggle/mode-toggle.component";
 import {LanguageCode} from "./language-change/language-change.component";
-import {CategoryPath, SortParam} from "./movie.service";
+import {CategoryPath, SortParam} from "./shared-data.service";
 
 interface StorageType {
     [key: string]: string | number;
-
-    theme: Theme,
     language: LanguageCode,
+    theme: Theme,
 }
 
 interface StateType {
-    page: number,
-    path: CategoryPath,
-    sort_by: SortParam
     language: LanguageCode,
-
+    sort_by?: SortParam
 }
 
 @Injectable({
@@ -37,10 +33,6 @@ export class StorageService {
 
     state: StateType = {
         language: LanguageCode.english,
-        sort_by: "popularity.desc",
-
-        page: 1,
-        path: "now-playing",
     };
     stateSignal = signal(this.state);
 

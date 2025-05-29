@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {ButtonComponent} from "../button/button.component";
 import {NgForOf, NgStyle} from "@angular/common";
+import {CategoryPath, SortParam} from "../shared-data.service";
 
 @Component({
     selector: 'app-option-dropdown',
@@ -17,11 +18,11 @@ import {NgForOf, NgStyle} from "@angular/common";
                 <app-button-component icon="arrow-left"
                                       [attributes]="{disabled:'disabled', class:'btn-info opacity-100'}"
                                       id="option-arrow"/>
-                <div class="position-absolute z-n1 d-flex gap-2 justify-content-start align-items-center bg-danger"
+                <div class="position-absolute z-n1 d-flex gap-2 justify-content-start align-items-center"
                      [ngStyle]="{'overflow': overflow ? 'visible' : 'hidden'}" id="option-dropdown">
                     <app-button-component icon="list" [attributes]="{ class:'btn-success'}" id="display"/>
-                    <div class="d-flex justify-content-center align-items-end gap-2 position-relative bg-warning"
-                         id="sort" (mouseenter)="overflow=true">
+                    <div class="d-flex justify-content-center align-items-end gap-2 position-relative" id="sort"
+                         (mouseenter)="overflow=true">
                         <app-button-component icon="funnel-fill" [attributes]="{ class:'btn-success'}"/>
                         <ul class="m-0 position-absolute list-group" id="sort-option">
                             <li class="list-group-item list-group-item-action list-group-item-warning text-center p-2"
@@ -36,5 +37,13 @@ import {NgForOf, NgStyle} from "@angular/common";
     `,
 })
 export class OptionDropdownComponent {
-    overflow=false
+    overflow = false;
+    categorySort: Record<CategoryPath, SortParam[]> = {
+        "now-playing": ["popularity.asc","popularity.desc", "vote_average.desc", "vote_average.asc", "vote_average.asc",
+            "vote_average.desc"],
+        "popular": ["popularity.asc","popularity.desc"],
+        "top-rated": [],
+        "upcoming": ["popularity.asc","popularity.desc", "vote_average.desc", "vote_average.asc", "vote_average.asc",
+            "vote_average.desc"],
+    };
 }
