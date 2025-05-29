@@ -459,7 +459,7 @@ a.card {
     height: 68px;
     overflow: hidden;
     /*transition:width 0.15s ease-out 0s, height 0.35s ease-in 0.15s;*/
-    transition:height 0.15s 0s, width 0.35s 0.15s;
+    transition: height 0.15s 0s, width 0.35s 0.15s;
 }
 
 #sort-option :last-child {
@@ -506,8 +506,7 @@ a.card {
         padding-top: 0.5rem;
     }
 
-    /*#option-container:hover{*/
-    #option-container {
+    #option-container:hover {
         #option-arrow img {
             transform: rotateZ(-90deg);
         }
@@ -517,16 +516,20 @@ a.card {
         }
     }
 
+    #sort {
+        width: 100%;
+    }
+
+    #sort-option {
+        right: 100%
+    }
+
     #sort:hover {
         #sort-option {
             width: 150%;
             height: 300px;
             transition: width 0.15s 0s, height 0.35s 0.15s;
         }
-    }
-
-    #sort-option:active{
-        background-color: black;
     }
 }
 
@@ -580,5 +583,4 @@ a.card {
 
 @media (min-width: 1400px) {
 }
-
 
