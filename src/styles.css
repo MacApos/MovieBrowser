@@ -447,23 +447,33 @@ a.card {
 }
 
 #option-container:hover {
-    /*#option-arrow img {*/
-    /*    transform: rotateZ(180deg);*/
-    /*}*/
+    #option-arrow img {
+        transform: rotateZ(180deg);
+    }
+}
+
+#sort {
+    height: 100%;
+    flex-direction: column;
 }
 
 #sort-option {
+    right: 0;
+    bottom: 100%;
+    height: 0;
+    width: 500px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     justify-content: space-between;
     background-color: initial;
-    width: 0;
-    height: 68px;
     overflow: hidden;
-    /*transition:width 0.15s ease-out 0s, height 0.35s ease-in 0.15s;*/
-    transition: height 0.15s 0s, width 0.35s 0.15s;
+    transition: height 0.35s 0.15s;
 }
 
-#sort-option :last-child {
-    background-color: #1f9904 !important;
+#sort:hover {
+    #sort-option {
+        height: calc(var(--btn-circle-dimension));
+    }
 }
 
 .pagination-flex {
@@ -472,12 +482,15 @@ a.card {
     display: flex;
 }
 
-@media (max-width: 575.98px) {
+@media (max-width: 767.98px) {
     #option-container:hover #option-dropdown {
         width: 210px;
     }
-}
 
+    #sort-option {
+        gap: 1rem
+    }
+}
 
 @media (min-width: 576px) {
     #movie-grid {
@@ -489,6 +502,29 @@ a.card {
             --aspect-ratio: 5;
             width: calc(var(--star-height) * var(--aspect-ratio));
         }
+    }
+}
+
+
+@media (min-width: 768px) {
+    #cat-dropdown-container {
+
+        #cat-dropdown-expand-2 {
+            display: block;
+        }
+
+        & > *:not(#cat-dropdown-expand-2) {
+            display: none;
+        }
+    }
+
+    #movie-list .col[data-index="1"] {
+        min-width: 50%;
+    }
+
+    #option {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
     }
 
     #option-arrow img {
@@ -517,42 +553,27 @@ a.card {
     }
 
     #sort {
+        height: initial;
         width: 100%;
+        flex-direction: row;
     }
 
     #sort-option {
-        right: 100%
+        right: 100%;
+        bottom: 0;
+        width: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        transition: height 0.3s 0s, width 0.3s 0.3s;
     }
 
     #sort:hover {
         #sort-option {
             width: 150%;
             height: 300px;
-            transition: width 0.15s 0s, height 0.35s 0.15s;
+            transition: height 0.3s 0.3s, width 0.3s 0s;
         }
-    }
-}
-
-
-@media (min-width: 768px) {
-    #cat-dropdown-container {
-
-        #cat-dropdown-expand-2 {
-            display: block;
-        }
-
-        & > *:not(#cat-dropdown-expand-2) {
-            display: none;
-        }
-    }
-
-    #movie-list .col[data-index="1"] {
-        min-width: 50%;
-    }
-
-    #option {
-        margin-left: 1.5rem;
-        margin-right: 1.5rem;
     }
 }
 

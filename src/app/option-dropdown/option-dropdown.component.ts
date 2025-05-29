@@ -20,13 +20,13 @@ import {NgForOf, NgStyle} from "@angular/common";
                 <div class="position-absolute z-n1 d-flex gap-2 justify-content-start align-items-center bg-danger"
                      [ngStyle]="{'overflow': overflow ? 'visible' : 'hidden'}" id="option-dropdown">
                     <app-button-component icon="list" [attributes]="{ class:'btn-success'}" id="display"/>
-                    <div class="d-flex justify-content-center align-items-end gap-2 position-relative"
+                    <div class="d-flex justify-content-center align-items-end gap-2 position-relative bg-warning"
                          id="sort" (mouseenter)="overflow=true">
                         <app-button-component icon="funnel-fill" [attributes]="{ class:'btn-success'}"/>
-                        <ul class="m-0 position-absolute  list-group" id="sort-option">
-                            <li class="list-group-item list-group-item-action list-group-item-warning"
-                                *ngFor="let item of [1,2,3,4]">
-                                {{ "item" + item }}
+                        <ul class="m-0 position-absolute list-group" id="sort-option">
+                            <li class="list-group-item list-group-item-action list-group-item-warning text-center p-2"
+                                *ngFor="let item of ['aaa','aaaaaa','aaa','aaaaa']">
+                                {{ item }}
                             </li>
                         </ul>
                     </div>
