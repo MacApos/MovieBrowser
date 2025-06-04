@@ -1,6 +1,6 @@
 import {Component, effect, inject, signal} from '@angular/core';
 import {ButtonComponent} from "../button/button.component";
-import {NgForOf, NgStyle} from "@angular/common";
+import { NgStyle } from "@angular/common";
 import {RouterService} from "../router.service";
 import {CategoryPath, SortCriteria, SortDirection} from "../constants";
 

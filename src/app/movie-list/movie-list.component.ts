@@ -1,5 +1,5 @@
 import {Component, computed, Directive, effect, inject, input, Input, OnChanges} from '@angular/core';
-import {CommonModule} from "@angular/common";
+
 import {StorageService} from "../storage.service";
 import {ListComponent} from "../list/list.component";
 import {BodyContainerComponent} from "../body-container/body-container.component";
@@ -11,7 +11,7 @@ import {LANGUAGE_DETAILS, EnumLanguageCode, LanguageCode} from "../constants";
 
 @Component({
     selector: 'app-movie-list',
-    imports: [CommonModule, BodyContainerComponent, PaginationComponent, OptionDropdownComponent, ListComponent],
+    imports: [BodyContainerComponent, PaginationComponent, OptionDropdownComponent, ListComponent],
     template: `
         <app-body-container>
             <app-list [display]="display" [movies]="results"/>

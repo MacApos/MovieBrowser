@@ -1,20 +1,10 @@
-import {
-    afterNextRender,
-    afterRender,
-    Component,
-    effect,
-    inject,
-    input,
-    OnChanges,
-    OnInit,
-    SimpleChanges
-} from '@angular/core';
+import {Component, inject, afterEveryRender} from '@angular/core';
 import {ModeToggleComponent} from "../mode-toggle/mode-toggle.component";
 import {CommonModule} from "@angular/common";
 import {LanguageChangeComponent} from "../language-change/language-change.component";
-import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {SearchBarComponent} from "../search-bar/search-bar.component";
-import {EnumLanguageCode, MOVIE_CATEGORY} from "../constants";
+import {MOVIE_CATEGORY} from "../constants";
 import {RouterService} from "../router.service";
 
 @Component({
@@ -52,25 +42,32 @@ import {RouterService} from "../router.service";
             <div class="position-absolute z-1 top-0 h-100" id="cat-dropdown">
                 <div id="cat-dropdown-container">
                     <div id="cat-dropdown-expand-1">
-                        <div id="cat-dropdown-col" [attr.data-index]="i"
-                             *ngFor="let category of movieCategory; index as i">
-                            <ng-container [ngTemplateOutlet]="button" [ngTemplateOutletContext]="{category}"/>
-                        </div>
+                        @for (category of movieCategory; track category; let i = $index) {
+                            <div id="cat-dropdown-col" [attr.data-index]="i"
+                            >
+                                <ng-container [ngTemplateOutlet]="button" [ngTemplateOutletContext]="{category}"/>
+                            </div>
+                        }
                     </div>
                     <div id="cat-dropdown-expand-2">
-                        <div id="cat-dropdown-col" *ngFor="let row of [0, middleIndex]; index as i;"
-                             [attr.data-index]="i">
-                            <ng-container [ngTemplateOutlet]="button"
-                                          [ngTemplateOutletContext]="{category}"
-                                          *ngFor="let category of movieCategory.slice(row, row + middleIndex);
-                                           index as i;"/>
-                        </div>
+                        @for (row of [0, middleIndex]; track row; let i = $index) {
+                            <div id="cat-dropdown-col"
+                                 [attr.data-index]="i">
+                                @for (category of movieCategory.slice(row, row + middleIndex); track category; let i = $index) {
+                                    <ng-container [ngTemplateOutlet]="button"
+                                                  [ngTemplateOutletContext]="{category}"
+                                    />
+                                }
+                            </div>
+                        }
                     </div>
                     <div id="cat-dropdown-expand-4">
                         <div id="cat-dropdown-col" [attr.data-index]="0">
-                            <ng-container [ngTemplateOutlet]="button"
-                                          [ngTemplateOutletContext]="{category}"
-                                          *ngFor="let category of movieCategory"/>
+                            @for (category of movieCategory; track category) {
+                                <ng-container [ngTemplateOutlet]="button"
+                                              [ngTemplateOutletContext]="{category}"
+                                />
+                            }
                         </div>
                     </div>
                 </div>
@@ -78,7 +75,7 @@ import {RouterService} from "../router.service";
         </div>
     `,
 })
-export class NavBarComponent{
+export class NavBarComponent {
     routerService = inject(RouterService);
     activatedRoute = inject(ActivatedRoute);
     height = 130;
@@ -89,9 +86,9 @@ export class NavBarComponent{
     middleIndex = this.movieCategory.length / 2;
 
     constructor() {
-        afterRender(()=>{
+        afterEveryRender(() => {
             this.language = this.routerService.getUrlSegment(0);
-        })
+        });
 
         // this.activatedRoute.url.subscribe(value => {
         //     this.language = value[0]?.path;

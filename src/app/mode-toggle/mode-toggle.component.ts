@@ -1,4 +1,4 @@
-import {afterRender, Component, inject, OnInit, output, signal} from '@angular/core';
+import { Component, inject, OnInit, output, signal} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 import {StorageService} from "../storage.service";
 import {ButtonComponent} from "../button/button.component";

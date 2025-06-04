@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
-import {NgForOf} from "@angular/common";
+
 
 @Component({
   selector: 'app-movie',
-  imports: [
-    NgForOf
-  ],
+  imports: [],
   template: `
     <div>tests</div>
 <!--    <div class="" id="movie-list">-->
