@@ -7,6 +7,7 @@ import {PaginationComponent} from "../pagination/pagination.component";
 import {OptionDropdownComponent} from "../option-dropdown/option-dropdown.component";
 import {RouterService} from "../router.service";
 import {MovieService} from "../movie.service";
+import {LANGUAGE_DETAILS, EnumLanguageCode, LanguageCode} from "../constants";
 
 @Component({
     selector: 'app-movie-list',
@@ -21,7 +22,7 @@ import {MovieService} from "../movie.service";
         <app-option-dropdown/>
     `,
 })
-export class MovieListComponent implements OnChanges{
+export class MovieListComponent implements OnChanges {
     movieService = inject(MovieService);
     storageService = inject(StorageService);
     routerService = inject(RouterService);
@@ -32,8 +33,9 @@ export class MovieListComponent implements OnChanges{
     results!: any[];
     totalPages!: number;
 
-    page= input.required<number, string>({transform: (value: string) => Number(value)});
-    language = input.required<string>()
+    page = input.required<number, string>({transform: (value: string) => Number(value)});
+    language = input.required<LanguageCode, string>(
+        {transform: (value: string) => value as LanguageCode});
 
     state = computed(() => this.storageService.stateSignal());
 
@@ -43,8 +45,9 @@ export class MovieListComponent implements OnChanges{
 
     constructor() {
         effect(() => {
-            const {language, sort_by} = this.storageService.stateSignal();
+            const {sort_by} = this.storageService.stateSignal();
             const page = this.page();
+            const language = this.language();
             this.movieService.getMovies(this.path, {language, page, sort_by}).subscribe(response => {
                 this.results = response["results"];
                 this.totalPages = response["totalPages"];
@@ -53,8 +56,6 @@ export class MovieListComponent implements OnChanges{
     }
 
     ngOnChanges(): void {
-
-
     }
 
 

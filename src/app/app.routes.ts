@@ -1,7 +1,6 @@
 import {Route, Routes} from '@angular/router';
 import {HeaderLayoutComponent} from "./header-layout/header-layout.component";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
-import {guardFactory, languageGuard, pageGuard, searchGuard} from "./valid-page.guard";
 import {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY} from "./constants"
 import {matchGuard} from "./match.guard";
 

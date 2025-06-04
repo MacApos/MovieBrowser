@@ -1,7 +1,7 @@
 import {ActivatedRouteSnapshot, CanActivateFn, GuardResult, Router} from '@angular/router';
 import {inject} from "@angular/core";
 import {RouterService} from "./router.service";
-import {LanguageCode, PAGE_NOT_FOUND, START_PAGE} from "./constants";
+import {EnumLanguageCode, PAGE_NOT_FOUND, START_PAGE} from "./constants";
 
 type guardFn = (router: Router, route: ActivatedRouteSnapshot, movieService: RouterService) => GuardResult
 
@@ -34,8 +34,8 @@ export const searchGuard: guardFn = (router, route, routerService) => {
 
 export const languageGuard: guardFn = (router, route, routerService) => {
     const {language} = route.params;
-    console.log(Object.values(LanguageCode).includes(language));
-    if (!Object.values(LanguageCode).includes(language)) {
+    console.log(Object.values(EnumLanguageCode).includes(language));
+    if (!Object.values(EnumLanguageCode).includes(language)) {
         return router.createUrlTree([PAGE_NOT_FOUND]);
     }
     return true;

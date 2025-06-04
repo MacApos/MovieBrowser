@@ -20,19 +20,22 @@ type QueryParams = {
     page?: number,
 }
 
-enum LanguageCode {
+type LanguageCode = "en" | "pl"
+
+
+enum EnumLanguageCode {
     english = "en",
     polish = "pl"
 }
 
-const LANGUAGE_DETAILS: Record<string, Record<string, LanguageCode | string>> = {
-    english: {
+const LANGUAGE_DETAILS: Record<LanguageCode, Record<string , string>> = {
+    en: {
         code: "en-US",
-        path: "usa"
+        icon: "usa"
     },
-    polish: {
+    pl: {
         code: "pl-PL",
-        path: "poland"
+        icon: "poland"
     }
 };
 
@@ -74,6 +77,6 @@ function formatDate(date: Date) {
     return `${date.getFullYear()}-${padStart(date.getMonth() + 1)}-${padStart(date.getDate())}`;
 }
 
-export {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY, LANGUAGE_DETAILS, LanguageCode};
-export type {CategoryPath, SortCriteria, SortDirection, SortParam, Sort, CategoryDetails, QueryParams};
+export {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY, LANGUAGE_DETAILS, EnumLanguageCode};
+export type {CategoryPath, SortCriteria, SortDirection, SortParam, Sort, CategoryDetails, QueryParams, LanguageCode};
 

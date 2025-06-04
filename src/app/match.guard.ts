@@ -1,5 +1,5 @@
 import {CanMatchFn, Router} from '@angular/router';
-import {LanguageCode, PAGE_NOT_FOUND} from "./constants";
+import {EnumLanguageCode, PAGE_NOT_FOUND} from "./constants";
 import {inject} from "@angular/core";
 
 export const matchGuard: CanMatchFn = (_, segments) => {
@@ -8,10 +8,10 @@ export const matchGuard: CanMatchFn = (_, segments) => {
     }
 
     const router = inject(Router);
-    const language = segments[0].path as LanguageCode;
+    const language = segments[0].path as EnumLanguageCode;
     const page = Number(segments[2].path);
 
-    if (!Object.values(LanguageCode).includes(language)) {
+    if (!Object.values(EnumLanguageCode).includes(language)) {
         router.navigate([PAGE_NOT_FOUND]);
     }
 

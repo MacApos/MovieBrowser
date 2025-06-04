@@ -1,10 +1,21 @@
-import {Component} from '@angular/core';
+import {
+    afterNextRender,
+    afterRender,
+    Component,
+    effect,
+    inject,
+    input,
+    OnChanges,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
 import {ModeToggleComponent} from "../mode-toggle/mode-toggle.component";
 import {CommonModule} from "@angular/common";
 import {LanguageChangeComponent} from "../language-change/language-change.component";
-import {RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {SearchBarComponent} from "../search-bar/search-bar.component";
-import {MOVIE_CATEGORY} from "../constants";
+import {EnumLanguageCode, MOVIE_CATEGORY} from "../constants";
+import {RouterService} from "../router.service";
 
 @Component({
     selector: 'app-nav-bar',
@@ -24,8 +35,8 @@ import {MOVIE_CATEGORY} from "../constants";
                 </a>
                 <div class="d-flex justify-content-between align-items-center w-50">
                     <app-mode-toggle/>
-                    <app-language-change language="english"/>
-                    <app-language-change language="polish"/>
+                    <app-language-change language="en"/>
+                    <app-language-change language="pl"/>
                     <div class="w-60">
                         <app-search-bar/>
                     </div>
@@ -33,7 +44,7 @@ import {MOVIE_CATEGORY} from "../constants";
             </nav>
 
             <ng-template #button let-category="category">
-                <button [routerLink]="['/', category.path, 1]" class="w-100 btn btn-info rounded-5">
+                <button [routerLink]="['/',language, category.path, 1]" class="w-100 btn btn-info rounded-5">
                     {{ category.name }}
                 </button>
             </ng-template>
@@ -67,12 +78,24 @@ import {MOVIE_CATEGORY} from "../constants";
         </div>
     `,
 })
-export class NavBarComponent {
+export class NavBarComponent{
+    routerService = inject(RouterService);
+    activatedRoute = inject(ActivatedRoute);
     height = 130;
     style = {top: `-${this.height / 2}px`};
+    language!: string;
 
     movieCategory = Object.values(MOVIE_CATEGORY);
     middleIndex = this.movieCategory.length / 2;
 
+    constructor() {
+        afterRender(()=>{
+            this.language = this.routerService.getUrlSegment(0);
+        })
 
+        // this.activatedRoute.url.subscribe(value => {
+        //     this.language = value[0]?.path;
+        //     console.log(this.language);
+        // });
+    }
 }

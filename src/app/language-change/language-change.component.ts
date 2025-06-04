@@ -1,7 +1,8 @@
-import {Component,  inject, input, OnInit} from '@angular/core';
-import {StorageService} from "../storage.service";
+import {Component, inject, input, OnInit} from '@angular/core';
 import {ButtonComponent} from "../button/button.component";
-import {LANGUAGE_DETAILS} from "../constants";
+import {LANGUAGE_DETAILS, EnumLanguageCode, LanguageCode} from "../constants";
+import {RouterService} from "../router.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-language-change',
@@ -10,12 +11,13 @@ import {LANGUAGE_DETAILS} from "../constants";
     ],
     template: `
         <app-button-component [action]="handleChangeLanguage.bind(this)" [fill]="true"
-                              [icon]="languageDetails['path']"/>
+                              [icon]="languageDetails['icon']"/>
     `,
 })
 export class LanguageChangeComponent implements OnInit {
-    language = input.required<string>();
-    storageService = inject(StorageService);
+    language = input.required<LanguageCode>();
+    routerService = inject(RouterService);
+    router = inject(Router);
     languageDetails!: Record<string, string>;
 
     ngOnInit(): void {
@@ -23,9 +25,10 @@ export class LanguageChangeComponent implements OnInit {
     }
 
     handleChangeLanguage() {
-        const languageCode = this.languageDetails["code"];
-        this.storageService.setItem("language", languageCode);
-        this.storageService.updateState({language: languageCode});
+        const urlSegments = this.routerService.getUrlSegments();
+        const queryParams = this.routerService.getQueryParams();
+        urlSegments[0].path = this.language();
+        this.router.navigate(urlSegments.map(s => s.path), {queryParams, replaceUrl:true});
     }
 
 

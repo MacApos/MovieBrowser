@@ -1,13 +1,13 @@
 import {inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
 import {isPlatformBrowser} from "@angular/common";
 import {Theme} from "./mode-toggle/mode-toggle.component";
-import {LanguageCode, SortParam} from "./constants";
+import {EnumLanguageCode, SortParam} from "./constants";
 
 
 interface StateType {
     [key: string]: string | number;
 
-    language: LanguageCode,
+    language: EnumLanguageCode,
     sort_by: SortParam
 }
 
@@ -23,13 +23,13 @@ export class StorageService {
     isBrowser = isPlatformBrowser(this.platformId);
     initStorage: StorageType = {
         theme: Theme.dark,
-        language: LanguageCode.english,
+        language: EnumLanguageCode.english,
         sort_by: "popularity.desc"
     };
 
     storageGuard: Record<string, (param: string) => boolean> = {
         theme: param => Object.values(Theme).includes(param as Theme),
-        language: param => Object.values(LanguageCode).includes(param as LanguageCode),
+        language: param => Object.values(EnumLanguageCode).includes(param as EnumLanguageCode),
     };
 
     state: StateType = {
