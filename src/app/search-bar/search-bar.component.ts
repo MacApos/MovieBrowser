@@ -1,7 +1,8 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, input, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {RouterService} from "../router.service";
+import {SEARCH_PAGE} from "../constants";
 
 @Component({
     selector: 'app-search-bar',
@@ -22,6 +23,8 @@ export class SearchBarComponent implements OnInit {
     route = inject(ActivatedRoute);
     query !: string;
 
+    // language = input.required<string>();
+
     ngOnInit(): void {
         this.route.queryParams.subscribe(queryParams => this.query = queryParams['query']);
     }
@@ -29,9 +32,9 @@ export class SearchBarComponent implements OnInit {
     searchMovie() {
         const query = this.query.trim();
         const path = this.routerService.getUrlSegment(0);
-        if (path != this.routerService.searchPage && query.length < 3) {
+        if (path != SEARCH_PAGE && query.length < 3) {
             return;
         }
-        this.routerService.navigate([this.routerService.searchPage], {queryParams: {query, page: 1}});
+        this.routerService.navigate(["en", SEARCH_PAGE], {queryParams: {query, page: 1}});
     }
 }

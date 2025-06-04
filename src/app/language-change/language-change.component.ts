@@ -1,22 +1,7 @@
-import {Component, effect, inject, input,  OnInit, signal} from '@angular/core';
+import {Component,  inject, input, OnInit} from '@angular/core';
 import {StorageService} from "../storage.service";
 import {ButtonComponent} from "../button/button.component";
-
-export enum LanguageCode {
-    english = "en-US",
-    polish = "pl-PL"
-}
-
-export const LanguageDetails: Record<string, Record<string, LanguageCode | string>> = {
-    english: {
-        code: "en-US",
-        path: "usa"
-    },
-    polish: {
-        code: "pl-PL",
-        path: "poland"
-    }
-};
+import {LANGUAGE_DETAILS} from "../constants";
 
 @Component({
     selector: 'app-language-change',
@@ -34,13 +19,13 @@ export class LanguageChangeComponent implements OnInit {
     languageDetails!: Record<string, string>;
 
     ngOnInit(): void {
-        this.languageDetails = LanguageDetails[this.language()];
+        this.languageDetails = LANGUAGE_DETAILS[this.language()];
     }
 
     handleChangeLanguage() {
         const languageCode = this.languageDetails["code"];
         this.storageService.setItem("language", languageCode);
-        this.storageService.updateState({language:languageCode})
+        this.storageService.updateState({language: languageCode});
     }
 
 

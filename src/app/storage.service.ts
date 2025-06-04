@@ -1,18 +1,18 @@
 import {inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
 import {isPlatformBrowser} from "@angular/common";
 import {Theme} from "./mode-toggle/mode-toggle.component";
-import {LanguageCode} from "./language-change/language-change.component";
-import {CategoryPath, SortParam} from "./shared-data.service";
+import {LanguageCode, SortParam} from "./constants";
 
-interface StorageType {
-    [key: string]: string | number;
-    language: LanguageCode,
-    theme: Theme,
-}
 
 interface StateType {
+    [key: string]: string | number;
+
     language: LanguageCode,
-    sort_by?: SortParam
+    sort_by: SortParam
+}
+
+interface StorageType extends StateType {
+    theme: Theme,
 }
 
 @Injectable({
@@ -24,15 +24,17 @@ export class StorageService {
     initStorage: StorageType = {
         theme: Theme.dark,
         language: LanguageCode.english,
+        sort_by: "popularity.desc"
     };
 
-    initStorageGuard: Record<string, (param: string) => boolean> = {
+    storageGuard: Record<string, (param: string) => boolean> = {
         theme: param => Object.values(Theme).includes(param as Theme),
         language: param => Object.values(LanguageCode).includes(param as LanguageCode),
     };
 
     state: StateType = {
-        language: LanguageCode.english,
+        language: this.initStorage.language,
+        sort_by: this.initStorage.sort_by,
     };
     stateSignal = signal(this.state);
 
@@ -40,24 +42,26 @@ export class StorageService {
         this.stateSignal.update(current => ({...current, ...update}));
     }
 
+
     initiateStorage() {
         if (this.isBrowser) {
             Object.keys(this.initStorage).forEach(keyName => {
                 const keyValue = localStorage.getItem(keyName);
-                if (keyValue && this.initStorageGuard[keyName](keyValue)) {
+                if (keyValue && this.storageGuard[keyName](keyValue)) {
                     this.initStorage[keyName] = keyValue;
                 }
             });
+            this.stateSignal.set(this.initStorage)
         }
     }
 
     getItem(keyName: string) {
-        const initStorageValue = this.initStorage[keyName] ?? null;
-        if (!this.isBrowser) {
-            return initStorageValue;
+        const initStorageValue = this.initStorage[keyName];
+        if (!this.isBrowser || !initStorageValue) {
+            return;
         }
         const keyValue = localStorage.getItem(keyName);
-        if (!keyValue || !this.initStorageGuard[keyName](keyValue)) {
+        if (!keyValue || !this.storageGuard[keyName](keyValue)) {
             return initStorageValue;
         }
         try {
@@ -68,7 +72,7 @@ export class StorageService {
     }
 
     setItem(keyName: string, keyValue: any): void {
-        if (!keyValue || !this.initStorageGuard[keyName](keyValue)) {
+        if (!keyValue || !this.storageGuard[keyName](keyValue)) {
             return;
         }
         if (this.isBrowser) {

@@ -1,11 +1,10 @@
-import {Component, inject} from '@angular/core';
+import {Component} from '@angular/core';
 import {ModeToggleComponent} from "../mode-toggle/mode-toggle.component";
-import {CommonModule, NgOptimizedImage,} from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {LanguageChangeComponent} from "../language-change/language-change.component";
-import {MovieService} from "../movie.service";
 import {RouterLink} from "@angular/router";
 import {SearchBarComponent} from "../search-bar/search-bar.component";
-import {SharedDataService} from "../shared-data.service";
+import {MOVIE_CATEGORY} from "../constants";
 
 @Component({
     selector: 'app-nav-bar',
@@ -65,29 +64,6 @@ import {SharedDataService} from "../shared-data.service";
                     </div>
                 </div>
             </div>
-            <!--                    <div class="position-absolute z-3 top-0 h-100" id="category-dropdown">-->
-            <!--                <div id="category-dropdown-4-col">-->
-            <!--                    <div class="category-dropdown-grid" [attr.data-index]="1">-->
-            <!--                        <ng-container [ngTemplateOutlet]="button" [ngTemplateOutletContext]="{category}"-->
-            <!--                                      *ngFor="let category of movieCategory"/>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-
-            <!--                <div id="category-dropdown-2-col">-->
-            <!--                    <div class="category-dropdown-grid" [attr.data-index]="i+1"-->
-            <!--                         *ngFor="let row of [0, middleIndex]; index as i;">-->
-            <!--                        <ng-container [ngTemplateOutlet]="button" [ngTemplateOutletContext]="{category}"-->
-            <!--                                      *ngFor="let category of movieCategory.slice(row, row + middleIndex); index as i;"/>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-
-            <!--                <div id="category-dropdown-1-col">-->
-            <!--                    <div class="category-dropdown-grid" [attr.data-index]="i+1"-->
-            <!--                         *ngFor="let category of movieCategory; index as i">-->
-            <!--                        <ng-container [ngTemplateOutlet]="button" [ngTemplateOutletContext]="{category}"/>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </div>-->
         </div>
     `,
 })
@@ -95,7 +71,8 @@ export class NavBarComponent {
     height = 130;
     style = {top: `-${this.height / 2}px`};
 
-    sharedDataService = inject(SharedDataService);
-    movieCategory = Object.values(this.sharedDataService.movieCategory);
+    movieCategory = Object.values(MOVIE_CATEGORY);
     middleIndex = this.movieCategory.length / 2;
+
+
 }

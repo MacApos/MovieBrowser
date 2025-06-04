@@ -1,19 +1,17 @@
 import {Route, Routes} from '@angular/router';
 import {HeaderLayoutComponent} from "./header-layout/header-layout.component";
-import {guardFactory, pageGuard, searchGuard} from "./valid-page.guard";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
-import {SharedDataService} from "./shared-data.service";
-
-const sharedDataService = new SharedDataService();
-const {startPage, searchPage, movieCategory} = sharedDataService;
+import {guardFactory, languageGuard, pageGuard, searchGuard} from "./valid-page.guard";
+import {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY} from "./constants"
+import {matchGuard} from "./match.guard";
 
 function redirectParams(path: string,
-                        redirectTo = startPage,
+                        redirectTo = START_PAGE,
                         pathMatch = "full"): Record<string, string> {
     return {path, redirectTo, pathMatch};
 }
 
-const routesMap = Object.values(movieCategory).map((value): Route => {
+const routesMap = Object.values(MOVIE_CATEGORY).map((value): Route => {
     return {
         path: value.path,
         children: [
@@ -22,7 +20,7 @@ const routesMap = Object.values(movieCategory).map((value): Route => {
                 path: ":page",
                 loadComponent: () => import("./movie-list/movie-list.component")
                     .then(c => c.MovieListComponent),
-                canActivate: [guardFactory(pageGuard)]
+                // canActivate: [guardFactory(pageGuard)]
             },
         ]
     };
@@ -30,68 +28,85 @@ const routesMap = Object.values(movieCategory).map((value): Route => {
 
 export const routes: Routes = [
     {
+        path: PAGE_NOT_FOUND,
+        component: PageNotFoundComponent
+    },
+    {
         path: "",
         component: HeaderLayoutComponent,
+        canMatch:[matchGuard],
         children: [
-            redirectParams(""),
-            ...routesMap,
+            redirectParams("", START_PAGE),
             {
-                path: "movie-details",
+                path: ":language",
                 children: [
-                    redirectParams("", `/${startPage}`),
+                    redirectParams("", `/${START_PAGE}` ),
+                    ...routesMap,
                     {
-                        path: ":id", loadComponent: () => import("./movie-details/movie-details.component")
-                            .then(c => c.MovieDetailsComponent),
-                        canActivate: [guardFactory(pageGuard)]
+                        path: "movie-details",
+                        children: [
+                            redirectParams("", `/${PAGE_NOT_FOUND}`),
+                            {
+                                path: ":id", loadComponent: () =>
+                                    import("./movie-details/movie-details.component")
+                                    .then(c => c.MovieDetailsComponent),
+                            },
+                        ],
                     },
-                ],
-            },
-            {
-                path: searchPage,
-                children: [
                     {
-                        path: "",
-                        loadComponent: () => import("./search-list/search-list.component")
-                            .then(c => c.SearchListComponent),
+                        path: SEARCH_PAGE,
+                        children: [
+                            {
+                                path: "",
+                                loadComponent: () =>
+                                    import("./search-list/search-list.component")
+                                    .then(c => c.SearchListComponent),
+                            },
+                        ],
                     },
-                ],
-                canActivate: [guardFactory(searchGuard)]
-            },
+                ]
+            }
         ]
     },
     {
         path: "**",
         component: PageNotFoundComponent
     }
-
-
-    // redirectParams(""),
-    // {
-    //     path: "movie-details",
-    //     component: HeaderLayoutComponent,
-    //     children: [
-    //         redirectParams(""),
-    //         {
-    //             path: ":id", loadComponent: () => import("./movie-details/movie-details.component")
-    //                 .then(c => c.MovieDetailsComponent)
-    //         },
-    //     ]
-    // },
-    // {
-    //     path: searchPage,
-    //     component: PaginationLayoutComponent,
-    //     children: [
-    //         {
-    //             path: "",
-    //             loadComponent: () => import("./search-list/search-list.component")
-    //                 .then(c => c.SearchListComponent),
-    //         },
-    //     ],
-    //     canActivate: [guardFactory(searchGuard)]
-    // },
-    // {
-    //     path: "**",
-    //     component: PageNotFoundComponent
-    // }
-
 ];
+
+
+// {
+//     path: "",
+//     component: HeaderLayoutComponent,
+//     children: [
+//         redirectParams(""),
+//         ...routesMap,
+//         {
+//             path: "movie-details",
+//             children: [
+//                 redirectParams("", `/${startPage}`),
+//                 {
+//                     path: ":id", loadComponent: () => import("./movie-details/movie-details.component")
+//                         .then(c => c.MovieDetailsComponent),
+//                     canActivate: [guardFactory(pageGuard)]
+//                 },
+//             ],
+//         },
+//         {
+//             path: searchPage,
+//             children: [
+//                 {
+//                     path: "",
+//                     loadComponent: () => import("./search-list/search-list.component")
+//                         .then(c => c.SearchListComponent),
+//                 },
+//             ],
+//             canActivate: [guardFactory(searchGuard)]
+//         },
+//     ]
+// },
+// {
+//     path: "**",
+//     component: PageNotFoundComponent
+// }
+

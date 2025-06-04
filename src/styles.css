@@ -578,8 +578,8 @@ a.card {
 
     #sort:hover {
         #sort-option {
-            width: 150%;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             transition: height 0.3s 0.3s, width 0.3s 0s;
         }
     }

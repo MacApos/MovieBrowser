@@ -2,6 +2,7 @@ import {Component, computed, DoCheck, HostListener, inject, input, InputSignal} 
 import {NgClass, NgForOf, NgTemplateOutlet} from "@angular/common";
 import {WINDOW} from "../window.token";
 import {RouterService} from "../router.service";
+import {PAGE_NOT_FOUND} from "../constants";
 
 export enum WindowWidth {
     md = 768,
@@ -92,7 +93,7 @@ export class PaginationComponent implements DoCheck {
         this.range = this.getRange(this.window, this.maxPage());
         const activePage = this.activePage();
         if (activePage > this.maxPage()) {
-            this.routerService.navigate([this.routerService.pageNotFound]);
+            this.routerService.navigate([PAGE_NOT_FOUND]);
         }
         this.pagination = this.getPagination(this.range, this.maxPage(), activePage);
     }

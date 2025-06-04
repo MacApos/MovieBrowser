@@ -3,6 +3,10 @@ import {NgOptimizedImage} from "@angular/common";
 import {StorageService} from "../storage.service";
 import {ButtonComponent} from "../button/button.component";
 
+
+import { Injectable, PLATFORM_ID} from '@angular/core';
+import {isPlatformBrowser} from "@angular/common";
+
 declare function setTheme(theme: string): void;
 
 export enum Theme {
@@ -21,7 +25,7 @@ export enum Theme {
 })
 export class ModeToggleComponent {
     storageService = inject(StorageService);
-    theme: any = this.storageService.initStorage["theme"];
+    theme: Theme = this.storageService.getItem("theme");
 
     handleChangeTheme() {
         this.theme = this.theme === Theme.dark ? Theme.light : Theme.dark;

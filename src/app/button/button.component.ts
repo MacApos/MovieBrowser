@@ -1,4 +1,4 @@
-import {Component,  input, InputSignal, OnInit} from '@angular/core';
+import {Component, input, OnInit} from '@angular/core';
 import {NgOptimizedImage} from "@angular/common";
 
 @Component({
@@ -6,26 +6,26 @@ import {NgOptimizedImage} from "@angular/common";
     imports: [
         NgOptimizedImage
     ],
-   template: `
-       <button class="btn btn-circle"
-               [class]="this.attributes()['class']"
-               [disabled]="this.attributes()['disabled']"
-               (click)="handleClick()">
-           @if (fill()) {
-               <img ngSrc="/img/{{icon()}}.svg" alt="{{icon()}}" fill/>
-           } @else {
-               <img ngSrc="/img/{{icon()}}.svg" alt="{{icon()}}"
-                    width="{{x > 0 ? x : 48}}" height="{{y > 0 ? y : 48}}"/>
-           }
-       </button>
-   `,
+    template: `
+        <button class="btn btn-circle"
+                [class]="this.attributes()['class']"
+                [disabled]="this.attributes()['disabled']"
+                (click)="handleClick()">
+            @if (fill()) {
+                <img ngSrc="/img/{{icon()}}.svg" alt="{{icon()}}" fill/>
+            } @else {
+                <img ngSrc="/img/{{icon()}}.svg" alt="{{icon()}}"
+                     width="{{x > 0 ? x : 48}}" height="{{y > 0 ? y : 48}}"/>
+            }
+        </button>
+    `,
 })
 export class ButtonComponent implements OnInit {
-    icon:InputSignal<string>  = input.required();
+    icon = input.required<string>();
     fill = input(false);
     dimensions = input([0, 0]);
-    action: InputSignal<(() => void)> = input(() => {});
-    attributes: InputSignal<{ [key: string]: string }> = input({});
+    action = input<() => void>(() => {});
+    attributes = input<{ [key: string]: string }>({});
     x!: number;
     y!: number;
 

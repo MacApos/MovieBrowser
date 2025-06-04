@@ -52,7 +52,7 @@ import {filter} from "rxjs";
 })
 export class ListComponent implements OnInit{
     display = input("movies-list");
-    movies: InputSignal<Record<string, any>[]> = input.required();
+    movies = input.required<Record<string, any>[]>();
     movieService = inject(MovieService);
     private readonly router = inject(Router);
     protected readonly Math = Math;

@@ -2,15 +2,13 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpResponse} from "@angular/common/http";
 import {environment} from "../environments/environment";
 import {filter, map} from "rxjs";
-import {CategoryPath, QueryParams, SharedDataService} from "./shared-data.service";
-import {LanguageCode} from "./language-change/language-change.component";
+import {CategoryPath, MOVIE_CATEGORY, QueryParams} from "./constants";
 
 @Injectable({
     providedIn: 'root'
 })
 export class MovieService {
     http = inject(HttpClient);
-    sharedDataService = inject(SharedDataService);
     baseUrl = "https://api.themoviedb.org/3";
     baseParams = "/movie?include_adult=false&include_video=false";
     searchUrl = `/search`;
@@ -36,10 +34,10 @@ export class MovieService {
 
     getMovies(path: string, params: QueryParams = {}) {
         let httpParams = new HttpParams({
-            fromString:  this.sharedDataService.movieCategory[path as CategoryPath].params
+            fromString:  MOVIE_CATEGORY[path as CategoryPath].params
         });
         for (const [key, value] of Object.entries(params)) {
-            if (value) {
+            if (!httpParams.has(key) && value) {
                 httpParams = httpParams.set(key, value);
             }
         }
