@@ -1,79 +1,121 @@
-import {Component, effect, inject, signal} from '@angular/core';
-import {ButtonComponent} from "../button/button.component";
-import { NgStyle } from "@angular/common";
+import {Component, inject, input, OnChanges, OnInit} from '@angular/core';
 import {RouterService} from "../router.service";
-import {CategoryPath, SortCriteria, SortDirection} from "../constants";
+import {CategoryPath, SortCriterion, SortDirection} from "../constants";
+import {ActivatedRoute} from '@angular/router';
+import {ButtonComponent} from "../button/button.component";
+import {NgOptimizedImage, NgStyle} from "@angular/common";
 
 @Component({
     selector: 'app-option-dropdown',
     imports: [
         ButtonComponent,
         NgStyle,
+        NgOptimizedImage,
     ],
     template: `
         <div class="position-fixed bottom-0 end-0 my-3 z-3" id="option">
-            <div class="position-relative d-flex justify-content-center align-items-center" id="option-container"
+            <div class="position-relative d-flex justify-content-center align-items-center"
+                 id="option-container"
                  (mouseleave)="overflow=false">
-                <app-button-component icon="arrow-left"
+                <app-button-component icon="arrow-up"
                                       [attributes]="{disabled:'disabled', class:'btn-info opacity-100'}"
                                       id="option-arrow"/>
-                <div class="position-absolute z-n1 d-flex gap-2 justify-content-start align-items-center"
+                <div class="position-absolute d-flex justify-content-start align-items-center gap-2 z-n1"
                      [ngStyle]="{'overflow': overflow ? 'visible' : 'hidden'}" id="option-dropdown">
                     <app-button-component icon="list" [attributes]="{ class:'btn-success'}" id="display"/>
-                    <div class="d-flex justify-content-center align-items-end gap-2 position-relative" id="sort"
-                         (mouseenter)="overflow=true">
-                        <app-button-component icon="funnel-fill" [attributes]="{ class:'btn-success'}"/>
-                        <ul class="m-0 position-absolute list-group" id="sort-option">
-                            <li class="list-group-item list-group-item-action list-group-item-warning text-center p-2"
-                            >
-                                {{ criteria() }}
-                            </li>
-                        </ul>
+                    <div class="position-relative d-flex justify-content-center align-items-end gap-2" id="sort-option"
+                         (mouseenter)="overflow=areCriteriaPresent">
+                        <app-button-component icon="funnel-fill"
+                                              [attributes]="{class:'btn-success', 
+                                              disabled:areCriteriaPresent ? '' : 'disabled'}"/>
+                        @if (areCriteriaPresent) {
+                            <div class="m-0 position-absolute" id="sort-option-container">
+                                @for (criterion of sortCriteria; track criterion) {
+                                    @let name = sortObj[criterion]["name"];
+                                    @let isActive = criterion === activeCriterion();
+                                    <button class="btn px-2 w-100 btn-warning" (click)="handleChangeSorting(criterion)"
+                                            id="sort-criterion">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                {{ name }}
+                                            </div>
+                                            @if (criterion === activeCriterion()) {
+                                                <span class="d-inline-flex justify-content-center align-items-center 
+                                                rounded-circle border border-2 border-black bg-white"
+                                                      [ngStyle]="spanStyles">
+                                                    <img ngSrc="/img/arrow-up.svg" alt="sort"
+                                                         [width]="reducedDimension" [height]="reducedDimension"/>
+                                                </span>
+                                            }
+                                        </div>
+                                    </button>
+                                }
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         </div>
     `,
 })
-export class OptionDropdownComponent {
+export class OptionDropdownComponent implements OnInit, OnChanges {
+    activeCriterion = input.required<string>();
+    activeDirection = input.required<SortDirection>();
+
+    dimension = 36;
+    reducedDimension = Math.ceil(36 * 0.75);
     overflow = false;
+    rotation = 0;
 
-    criteriaName: Record<SortCriteria, string> = {
-        "popularity": "Popularity",
-        "vote_average": "Average vote",
-        "primary_release_date": "Release date"
-    };
+    routerService = inject(RouterService);
+    activatedRoute = inject(ActivatedRoute);
+    sortCriteria !: SortCriterion[];
+    areCriteriaPresent!: boolean;
 
-    categorySort: Record<CategoryPath, SortCriteria[]> = {
+    categorySort: Record<CategoryPath, SortCriterion[]> = {
         "now-playing": ["popularity", "vote_average", "primary_release_date"],
-        "popular": ["popularity", "popularity"],
+        "popular": ["popularity"],
         "top-rated": [],
         "upcoming": ["popularity", "vote_average", "primary_release_date"],
     };
 
-    initialCriteria !: Record<string, Record<string, SortCriteria | SortDirection>>;
-    routerService = inject(RouterService);
-    criteria =
-        signal<Record<string, Record<string, SortCriteria | SortDirection>> | undefined>(this.initialCriteria);
+    sortObj: Record<SortCriterion, { name: string }> = {
+        "popularity": {
+            name: "Popularity",
+        },
+        "primary_release_date": {
+            name: "Release date",
+        },
+        "vote_average": {
+            name: "Average vote",
+        },
+    };
 
-    test = signal<Record<string, Record<string, string>>>({test0: {test1: "test1", test2: "test2"}});
-
-    changeCriteria(option: [string, object]) {
-        const name = option[0];
-        const sort = option[1];
-
-
+    ngOnInit(): void {
+        this.sortCriteria = this.categorySort[this.routerService.getUrlSegment(1) as CategoryPath];
+        this.areCriteriaPresent = this.sortCriteria.length > 0;
     }
 
-    constructor() {
-
-        // const reduce1 = this.categorySort[this.routerService.getUrlSegment(0) as CategoryPath]
-        //     .reduce((accumulator: Record<string, string | SortCriteria | SortDirection>[], currentValue) => {
-        //         accumulator.push({name: this.criteriaName[currentValue], criteria: currentValue, direction: "asc"});
-        //         return accumulator;
-        //     }, []);
+    ngOnChanges(): void {
+        this.rotation=this.activeDirection() === "desc" ? -180 : 0;
     }
 
+    handleChangeSorting(criterion: string) {
+        this.routerService.navigate([], {
+            queryParams: {
+                sort_criterion: criterion,
+                sort_direction: criterion == this.activeCriterion() && this.activeDirection() === "desc" ?
+                    "asc" : "desc"
+            }, relativeTo: this.activatedRoute
+        });
+    }
 
-    protected readonly Object = Object;
+    get spanStyles() {
+        return {
+            width: `${this.dimension}px`,
+            height: `${this.dimension}px`,
+            transform: `rotate(${this.rotation}deg)`
+        };
+    }
+
 }

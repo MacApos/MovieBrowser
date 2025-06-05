@@ -1,14 +1,17 @@
 import {Component, input, OnInit} from '@angular/core';
-import {NgOptimizedImage} from "@angular/common";
+import {NgOptimizedImage, NgStyle} from "@angular/common";
 
 @Component({
     selector: 'app-button-component',
     imports: [
-        NgOptimizedImage
+        NgOptimizedImage,
+        NgOptimizedImage,
+        NgStyle
     ],
     template: `
         <button class="btn btn-circle"
                 [class]="this.attributes()['class']"
+                [ngStyle]="this.attributes()['style']"
                 [disabled]="this.attributes()['disabled']"
                 (click)="handleClick()">
             @if (fill()) {
@@ -25,7 +28,7 @@ export class ButtonComponent implements OnInit {
     fill = input(false);
     dimensions = input([0, 0]);
     action = input<() => void>(() => {});
-    attributes = input<{ [key: string]: string }>({});
+    attributes = input<{ [key: string]: string  | any}>({});
     x!: number;
     y!: number;
 

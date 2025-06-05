@@ -24,17 +24,9 @@ export class MovieService {
         return `${this.imageUrl}/w500${path}`;
     }
 
-    mapResponseFn = (response: HttpResponse<Record<string, any>>) => {
-        const body = response.body;
-        if (body && body["total_pages"] && body["results"]) {
-            return {totalPages: body["total_pages"], results: body["results"]};
-        }
-        return;
-    };
-
     getMovies(path: string, params: QueryParams = {}) {
         let httpParams = new HttpParams({
-            fromString:  MOVIE_CATEGORY[path as CategoryPath].params
+            fromString: MOVIE_CATEGORY[path as CategoryPath].params
         });
         for (const [key, value] of Object.entries(params)) {
             if (!httpParams.has(key) && value) {
@@ -49,8 +41,19 @@ export class MovieService {
         return this.getRequest(this.searchUrl, httpParams, this.mapResponseFn);
     }
 
-     getMovieById() {
+    getMovieById() {
     }
+
+    mapResponseFn = (response: HttpResponse<Record<string, any>>) => {
+        const body = response.body;
+        if (body && body["total_pages"] && body["results"]) {
+            return {
+                totalPages: body["total_pages"],
+                results: body["results"]
+            };
+        }
+        return;
+    };
 
     getRequest(url: string, params: HttpParams, mapResponseFn: (value: HttpResponse<Record<string, any>>) =>
         Record<string, any> | undefined) {

@@ -1,4 +1,4 @@
-import {Component, computed, Directive, effect, inject, input, Input, OnChanges} from '@angular/core';
+import {Component,  effect, inject, input, OnChanges, OnInit} from '@angular/core';
 
 import {StorageService} from "../storage.service";
 import {ListComponent} from "../list/list.component";
@@ -7,7 +7,8 @@ import {PaginationComponent} from "../pagination/pagination.component";
 import {OptionDropdownComponent} from "../option-dropdown/option-dropdown.component";
 import {RouterService} from "../router.service";
 import {MovieService} from "../movie.service";
-import {LANGUAGE_DETAILS, EnumLanguageCode, LanguageCode} from "../constants";
+import {LanguageCode, SortCriterion, SortDirection, SortParam} from "../constants";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-movie-list',
@@ -19,44 +20,40 @@ import {LANGUAGE_DETAILS, EnumLanguageCode, LanguageCode} from "../constants";
         @if (results && results.length > 0 && totalPages && totalPages > 1) {
             <app-pagination [maxPage]="totalPages" [activePage]="page()" [pageNavigation]="pageNavigation"/>
         }
-        <app-option-dropdown/>
+        <app-option-dropdown [activeCriterion]="sort_criterion()" [activeDirection]="sort_direction()"/>
     `,
 })
 export class MovieListComponent implements OnChanges {
     movieService = inject(MovieService);
-    storageService = inject(StorageService);
     routerService = inject(RouterService);
-
-    display = "movie-list";
-    path = this.routerService.getUrlSegment(1);
+    activatedRoute = inject(ActivatedRoute);
 
     results!: any[];
     totalPages!: number;
+    display = "movie-list";
 
-    page = input.required<number, string>({transform: (value: string) => Number(value)});
-    language = input.required<LanguageCode, string>(
-        {transform: (value: string) => value as LanguageCode});
-
-    state = computed(() => this.storageService.stateSignal());
+    language = input.required<LanguageCode>();
+    page = input.required({transform: (value:string) => Number(value)});
+    sort_criterion = input.required({transform: (value:string) => value as SortCriterion ?? "popularity"});
+    sort_direction = input.required({transform: (value:string) => value as SortDirection ?? "desc"});
 
     pageNavigation = (page: number) => {
-        return this.routerService.navigate([this.path, page]);
+        return this.routerService.navigate(["..", page], {
+            relativeTo: this.activatedRoute,
+            queryParams: this.routerService.getQueryParams(),
+        });
     };
 
-    constructor() {
-        effect(() => {
-            const {sort_by} = this.storageService.stateSignal();
-            const page = this.page();
-            const language = this.language();
-            this.movieService.getMovies(this.path, {language, page, sort_by}).subscribe(response => {
+    ngOnChanges() {
+        const language = this.language();
+        const page = this.page();
+        const sort_by = `${this.sort_criterion()}.${this.sort_direction()}` as SortParam
+        console.log(sort_by);
+        const path = this.routerService.getUrlSegment(1);
+            this.movieService.getMovies(path, {language, page, sort_by}).subscribe(response => {
                 this.results = response["results"];
                 this.totalPages = response["totalPages"];
             });
-        });
     }
-
-    ngOnChanges(): void {
-    }
-
 
 }

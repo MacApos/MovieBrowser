@@ -11,7 +11,7 @@ import {filter} from "rxjs";
 ],
     template: `
         <div class="d-grid gap-3" [id]="display()">
-          @for (movie of movies(); track movie) {
+          @for (movie of movies(); track movie["id"]) {
             <div class="card">
               <div class="row mx-0 h-100" data-index="1">
                 <div class="col px-0" data-index="1">

@@ -1,11 +1,7 @@
-import { Component, inject, OnInit, output, signal} from '@angular/core';
-import {NgOptimizedImage} from "@angular/common";
+import { Component, inject} from '@angular/core';
 import {StorageService} from "../storage.service";
 import {ButtonComponent} from "../button/button.component";
-
-
-import { Injectable, PLATFORM_ID} from '@angular/core';
-import {isPlatformBrowser} from "@angular/common";
+import {NgOptimizedImage} from "@angular/common";
 
 declare function setTheme(theme: string): void;
 
@@ -17,7 +13,7 @@ export enum Theme {
 @Component({
     selector: 'app-mode-toggle',
     imports: [
-        ButtonComponent
+        ButtonComponent,
     ],
     template: `
         <app-button-component [action]="handleChangeTheme.bind(this)" [fill]="true" [icon]="theme"/>

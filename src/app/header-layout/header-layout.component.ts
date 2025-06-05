@@ -1,6 +1,6 @@
-import {Component, inject, Input, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {NavBarComponent} from "../nav-bar/nav-bar.component";
-import {ActivatedRoute, RouterOutlet} from "@angular/router";
+import { RouterOutlet} from "@angular/router";
 
 @Component({
     selector: 'app-header-layout',
@@ -17,6 +17,5 @@ import {ActivatedRoute, RouterOutlet} from "@angular/router";
         </div>
     `,
 })
-export class HeaderLayoutComponent {
-
+export class HeaderLayoutComponent{
 }

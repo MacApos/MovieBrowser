@@ -6,12 +6,12 @@ import {EnumLanguageCode, SortParam} from "./constants";
 
 interface StateType {
     [key: string]: string | number;
-
     language: EnumLanguageCode,
     sort_by: SortParam
 }
 
-interface StorageType extends StateType {
+interface StorageType {
+    [key: string]: string | number;
     theme: Theme,
 }
 
@@ -23,20 +23,13 @@ export class StorageService {
     isBrowser = isPlatformBrowser(this.platformId);
     initStorage: StorageType = {
         theme: Theme.dark,
-        language: EnumLanguageCode.english,
-        sort_by: "popularity.desc"
     };
 
     storageGuard: Record<string, (param: string) => boolean> = {
         theme: param => Object.values(Theme).includes(param as Theme),
-        language: param => Object.values(EnumLanguageCode).includes(param as EnumLanguageCode),
     };
 
-    state: StateType = {
-        language: this.initStorage.language,
-        sort_by: this.initStorage.sort_by,
-    };
-    stateSignal = signal(this.state);
+    stateSignal = signal({});
 
     updateState(update: object) {
         this.stateSignal.update(current => ({...current, ...update}));
@@ -51,14 +44,13 @@ export class StorageService {
                     this.initStorage[keyName] = keyValue;
                 }
             });
-            this.stateSignal.set(this.initStorage)
         }
     }
 
     getItem(keyName: string) {
         const initStorageValue = this.initStorage[keyName];
-        if (!this.isBrowser || !initStorageValue) {
-            return;
+        if (!this.isBrowser) {
+            return initStorageValue;
         }
         const keyValue = localStorage.getItem(keyName);
         if (!keyValue || !this.storageGuard[keyName](keyValue)) {

@@ -2,7 +2,7 @@ import {Component, inject, input, OnInit} from '@angular/core';
 import {ButtonComponent} from "../button/button.component";
 import {LANGUAGE_DETAILS, EnumLanguageCode, LanguageCode} from "../constants";
 import {RouterService} from "../router.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-language-change',
@@ -17,7 +17,6 @@ import {Router} from "@angular/router";
 export class LanguageChangeComponent implements OnInit {
     language = input.required<LanguageCode>();
     routerService = inject(RouterService);
-    router = inject(Router);
     languageDetails!: Record<string, string>;
 
     ngOnInit(): void {
@@ -28,7 +27,7 @@ export class LanguageChangeComponent implements OnInit {
         const urlSegments = this.routerService.getUrlSegments();
         const queryParams = this.routerService.getQueryParams();
         urlSegments[0].path = this.language();
-        this.router.navigate(urlSegments.map(s => s.path), {queryParams, replaceUrl:true});
+        this.routerService.navigate(urlSegments.map(s => s.path), queryParams);
     }
 
 

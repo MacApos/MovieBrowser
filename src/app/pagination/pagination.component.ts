@@ -45,7 +45,7 @@ export enum WindowWidth {
                 @for (page of pagination; track page) {
                   <div class="page-item"
                     (click)="handleClick(page)"
-                    [ngClass]="{active:activePage()===page}">
+                    [ngClass]="{active:page===activePage()}">
                     <a class="page-link">
                       {{ page }}
                     </a>

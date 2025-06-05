@@ -34,7 +34,6 @@ export const searchGuard: guardFn = (router, route, routerService) => {
 
 export const languageGuard: guardFn = (router, route, routerService) => {
     const {language} = route.params;
-    console.log(Object.values(EnumLanguageCode).includes(language));
     if (!Object.values(EnumLanguageCode).includes(language)) {
         return router.createUrlTree([PAGE_NOT_FOUND]);
     }

@@ -1,10 +1,10 @@
 type CategoryPath = "now-playing" | "popular" | "top-rated" | "upcoming"
-type SortCriteria = "popularity" | "vote_average" | "primary_release_date";
+type SortCriterion = "popularity" | "vote_average" | "primary_release_date";
 type SortDirection = "asc" | "desc"
-type SortParam = `${SortCriteria}.${SortDirection}`
+type SortParam = `${SortCriterion}.${SortDirection}`
 type Sort = {
     name: string
-    criteria: SortCriteria
+    criterion: SortCriterion
     direction: SortDirection
 }
 
@@ -78,5 +78,5 @@ function formatDate(date: Date) {
 }
 
 export {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY, LANGUAGE_DETAILS, EnumLanguageCode};
-export type {CategoryPath, SortCriteria, SortDirection, SortParam, Sort, CategoryDetails, QueryParams, LanguageCode};
+export type {CategoryPath, SortCriterion, SortDirection, SortParam, Sort, CategoryDetails, QueryParams, LanguageCode};
 

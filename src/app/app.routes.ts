@@ -19,7 +19,6 @@ const routesMap = Object.values(MOVIE_CATEGORY).map((value): Route => {
                 path: ":page",
                 loadComponent: () => import("./movie-list/movie-list.component")
                     .then(c => c.MovieListComponent),
-                // canActivate: [guardFactory(pageGuard)]
             },
         ]
     };
