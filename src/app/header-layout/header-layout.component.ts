@@ -12,7 +12,9 @@ import { RouterOutlet} from "@angular/router";
         <div class="container-lg my-3">
             <div class="rounded-3" id="body">
                 <app-nav-bar/>
-                <router-outlet/>
+                <div class="bg-body-tertiary bg-opacity-50 rounded-bottom-3 p-3">
+                    <router-outlet/>
+                </div>
             </div>
         </div>
     `,

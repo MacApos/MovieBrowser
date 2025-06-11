@@ -23,7 +23,6 @@ export class SearchBarComponent implements OnInit {
     route = inject(ActivatedRoute);
     query !: string;
 
-    // language = input.required<string>();
 
     ngOnInit(): void {
         this.route.queryParams.subscribe(queryParams => this.query = queryParams['query']);
@@ -35,6 +34,6 @@ export class SearchBarComponent implements OnInit {
         if (path != SEARCH_PAGE && query.length < 3) {
             return;
         }
-        this.routerService.navigate(["en", SEARCH_PAGE], {queryParams: {query, page: 1}});
+        this.routerService.navigate([this.routerService.getUrlSegment(0), SEARCH_PAGE], {queryParams: {query, page: 1}});
     }
 }

@@ -27,7 +27,7 @@ export class LanguageChangeComponent implements OnInit {
         const urlSegments = this.routerService.getUrlSegments();
         const queryParams = this.routerService.getQueryParams();
         urlSegments[0].path = this.language();
-        this.routerService.navigate(urlSegments.map(s => s.path), queryParams);
+        this.routerService.navigate(urlSegments.map(s => s.path), {queryParams});
     }
 
 

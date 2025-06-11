@@ -15,7 +15,6 @@ export const matchGuard: CanMatchFn = (_, segments) => {
         router.navigate([PAGE_NOT_FOUND]);
     }
 
-    const number = Number(page);
     if (isNaN(page) || page < 0) {
         router.navigate([PAGE_NOT_FOUND]);
     }

@@ -4,7 +4,7 @@ import {provideRouter,  withComponentInputBinding} from '@angular/router';
 import {routes} from './app.routes';
 import {provideClientHydration, withEventReplay} from '@angular/platform-browser';
 import {StorageService} from "./storage.service";
-import {provideHttpClient, withFetch} from "@angular/common/http";
+import {provideHttpClient, withFetch, withInterceptors} from "@angular/common/http";
 
 export const appConfig: ApplicationConfig = {
     providers: [

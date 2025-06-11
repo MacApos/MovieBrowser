@@ -3,8 +3,9 @@ import {ModeToggleComponent} from "../mode-toggle/mode-toggle.component";
 import {CommonModule} from "@angular/common";
 import {LanguageChangeComponent} from "../language-change/language-change.component";
 import {SearchBarComponent} from "../search-bar/search-bar.component";
-import {CategoryDetails,  MOVIE_CATEGORY} from "../constants";
+import {CategoryDetails, MOVIE_CATEGORY} from "../constants";
 import {RouterService} from "../router.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-nav-bar',
@@ -74,19 +75,17 @@ import {RouterService} from "../router.service";
         </div>
     `,
 })
-export class NavBarComponent{
+export class NavBarComponent {
     routerService = inject(RouterService);
+    router = inject(Router);
 
     height = 130;
     style = {top: `-${this.height / 2}px`};
     movieCategory = Object.values(MOVIE_CATEGORY);
     middleIndex = this.movieCategory.length / 2;
 
-    handleChangeCategory(category:CategoryDetails ) {
-        const urlSegments = this.routerService.getUrlSegments();
-        const queryParams = this.routerService.getQueryParams();
-        urlSegments[1].path = category.path
-        urlSegments[2].path = "1"
-        this.routerService.navigate(urlSegments.map(s => s.path), queryParams);
+    handleChangeCategory(category: CategoryDetails) {
+        const language = this.routerService.getUrlSegment(0);
+        this.router.navigate(["/", language, category.path, "1"]);
     }
 }

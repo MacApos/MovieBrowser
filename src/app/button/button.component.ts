@@ -32,7 +32,7 @@ export class ButtonComponent implements OnInit {
     x!: number;
     y!: number;
 
-    ngOnInit() {
+    ngOnInit(): void {
         [this.x, this.y] = this.dimensions();
     }
 

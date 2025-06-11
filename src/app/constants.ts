@@ -42,6 +42,7 @@ const LANGUAGE_DETAILS: Record<LanguageCode, Record<string , string>> = {
 const START_PAGE = "en/now-playing/1";
 const PAGE_NOT_FOUND = "page-not-found";
 const SEARCH_PAGE = "search";
+const MOVIE_DETAILS = "movie-details";
 
 const presentDate = new Date();
 const presentFormattedDate = formatDate(new Date());
@@ -77,6 +78,6 @@ function formatDate(date: Date) {
     return `${date.getFullYear()}-${padStart(date.getMonth() + 1)}-${padStart(date.getDate())}`;
 }
 
-export {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY, LANGUAGE_DETAILS, EnumLanguageCode};
+export {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_DETAILS, MOVIE_CATEGORY, LANGUAGE_DETAILS, EnumLanguageCode};
 export type {CategoryPath, SortCriterion, SortDirection, SortParam, Sort, CategoryDetails, QueryParams, LanguageCode};
 

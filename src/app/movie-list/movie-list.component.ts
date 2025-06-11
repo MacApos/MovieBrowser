@@ -1,6 +1,4 @@
-import {Component,  effect, inject, input, OnChanges, OnInit} from '@angular/core';
-
-import {StorageService} from "../storage.service";
+import {Component, inject, input, OnChanges} from '@angular/core';
 import {ListComponent} from "../list/list.component";
 import {BodyContainerComponent} from "../body-container/body-container.component";
 import {PaginationComponent} from "../pagination/pagination.component";
@@ -14,13 +12,14 @@ import {ActivatedRoute} from "@angular/router";
     selector: 'app-movie-list',
     imports: [BodyContainerComponent, PaginationComponent, OptionDropdownComponent, ListComponent],
     template: `
-        <app-body-container>
-            <app-list [display]="display" [movies]="results"/>
-        </app-body-container>
-        @if (results && results.length > 0 && totalPages && totalPages > 1) {
-            <app-pagination [maxPage]="totalPages" [activePage]="page()" [pageNavigation]="pageNavigation"/>
+
+        @if (results && results.length > 0) {
+            <app-list [display]="display" [movies]="results" [language]="language()"/>
+            @if (totalPages && totalPages > 1) {
+                <app-pagination [maxPage]="totalPages" [activePage]="page()" [pageNavigation]="pageNavigation"/>
+            }
+            <app-option-dropdown [activeCriterion]="sort_criterion()" [activeDirection]="sort_direction()"/>
         }
-        <app-option-dropdown [activeCriterion]="sort_criterion()" [activeDirection]="sort_direction()"/>
     `,
 })
 export class MovieListComponent implements OnChanges {
@@ -33,9 +32,9 @@ export class MovieListComponent implements OnChanges {
     display = "movie-list";
 
     language = input.required<LanguageCode>();
-    page = input.required({transform: (value:string) => Number(value)});
-    sort_criterion = input.required({transform: (value:string) => value as SortCriterion ?? "popularity"});
-    sort_direction = input.required({transform: (value:string) => value as SortDirection ?? "desc"});
+    page = input.required({transform: (value: string) => Number(value)});
+    sort_criterion = input.required({transform: (value: string) => value as SortCriterion ?? "popularity"});
+    sort_direction = input.required({transform: (value: string) => value as SortDirection ?? "desc"});
 
     pageNavigation = (page: number) => {
         return this.routerService.navigate(["..", page], {
@@ -44,16 +43,15 @@ export class MovieListComponent implements OnChanges {
         });
     };
 
-    ngOnChanges() {
+    ngOnChanges():void {
         const language = this.language();
         const page = this.page();
-        const sort_by = `${this.sort_criterion()}.${this.sort_direction()}` as SortParam
-        console.log(sort_by);
+        const sort_by = `${this.sort_criterion()}.${this.sort_direction()}` as SortParam;
         const path = this.routerService.getUrlSegment(1);
-            this.movieService.getMovies(path, {language, page, sort_by}).subscribe(response => {
-                this.results = response["results"];
-                this.totalPages = response["totalPages"];
-            });
+        this.movieService.getMovies(path, {language, page, sort_by}).subscribe(response => {
+            this.results = response["results"];
+            this.totalPages = response["totalPages"];
+        });
     }
 
 }

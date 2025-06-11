@@ -13,7 +13,7 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
         NgOptimizedImage,
     ],
     template: `
-        <div class="position-fixed bottom-0 end-0 my-3 z-3" id="option">
+        <div class="position-fixed bottom-0 end-0 mx-2 my-3 z-3" id="option">
             <div class="position-relative d-flex justify-content-center align-items-center"
                  id="option-container"
                  (mouseleave)="overflow=false">
@@ -24,12 +24,12 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
                      [ngStyle]="{'overflow': overflow ? 'visible' : 'hidden'}" id="option-dropdown">
                     <app-button-component icon="list" [attributes]="{ class:'btn-success'}" id="display"/>
                     <div class="position-relative d-flex justify-content-center align-items-end gap-2" id="sort-option"
-                         (mouseenter)="overflow=areCriteriaPresent">
+                         (mouseenter)="handleMouseEnter()" (mouseleave)="handleMouseLeave()">
                         <app-button-component icon="funnel-fill"
                                               [attributes]="{class:'btn-success', 
                                               disabled:areCriteriaPresent ? '' : 'disabled'}"/>
                         @if (areCriteriaPresent) {
-                            <div class="m-0 position-absolute" id="sort-option-container">
+                            <div class="m-0 position-absolute" id="sort-option-container" [ngStyle]="containerStyle">
                                 @for (criterion of sortCriteria; track criterion) {
                                     @let name = sortObj[criterion]["name"];
                                     @let isActive = criterion === activeCriterion();
@@ -42,7 +42,7 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
                                             @if (criterion === activeCriterion()) {
                                                 <span class="d-inline-flex justify-content-center align-items-center 
                                                 rounded-circle border border-2 border-black bg-white"
-                                                      [ngStyle]="spanStyles">
+                                                      [ngStyle]="spanStyle">
                                                     <img ngSrc="/img/arrow-up.svg" alt="sort"
                                                          [width]="reducedDimension" [height]="reducedDimension"/>
                                                 </span>
@@ -58,14 +58,15 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
         </div>
     `,
 })
-export class OptionDropdownComponent implements OnInit, OnChanges {
+export class OptionDropdownComponent implements OnChanges {
     activeCriterion = input.required<string>();
     activeDirection = input.required<SortDirection>();
 
-    dimension = 36;
-    reducedDimension = Math.ceil(36 * 0.75);
     overflow = false;
-    rotation = 0;
+    spanRotation = 0;
+    spanDimension = 36;
+    reducedDimension = Math.ceil(36 * 0.75);
+    containerHeight = 64;
 
     routerService = inject(RouterService);
     activatedRoute = inject(ActivatedRoute);
@@ -91,13 +92,10 @@ export class OptionDropdownComponent implements OnInit, OnChanges {
         },
     };
 
-    ngOnInit(): void {
+    ngOnChanges(): void {
         this.sortCriteria = this.categorySort[this.routerService.getUrlSegment(1) as CategoryPath];
         this.areCriteriaPresent = this.sortCriteria.length > 0;
-    }
-
-    ngOnChanges(): void {
-        this.rotation=this.activeDirection() === "desc" ? -180 : 0;
+        this.spanRotation = this.activeDirection() === "desc" ? -180 : 0;
     }
 
     handleChangeSorting(criterion: string) {
@@ -110,12 +108,27 @@ export class OptionDropdownComponent implements OnInit, OnChanges {
         });
     }
 
-    get spanStyles() {
+    handleMouseEnter() {
+        this.overflow = this.areCriteriaPresent
+        const length = this.sortCriteria.length;
+        this.containerHeight = length * 64 + Math.abs(length - 1) * 12;
+    }
+
+    handleMouseLeave() {
+        this.containerHeight = 64
+    }
+
+    get containerStyle() {
         return {
-            width: `${this.dimension}px`,
-            height: `${this.dimension}px`,
-            transform: `rotate(${this.rotation}deg)`
+            height: `${this.containerHeight}px`,
         };
     }
 
+    get spanStyle() {
+        return {
+            width: `${this.spanDimension}px`,
+            height: `${this.spanDimension}px`,
+            transform: `rotate(${this.spanRotation}deg)`
+        };
+    }
 }

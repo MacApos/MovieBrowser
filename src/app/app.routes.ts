@@ -26,15 +26,15 @@ const routesMap = Object.values(MOVIE_CATEGORY).map((value): Route => {
 
 export const routes: Routes = [
     {
-        path: PAGE_NOT_FOUND,
-        component: PageNotFoundComponent
-    },
-    {
         path: "",
         component: HeaderLayoutComponent,
         canMatch:[matchGuard],
         children: [
             redirectParams("", START_PAGE),
+            {
+                path: PAGE_NOT_FOUND,
+                component: PageNotFoundComponent
+            },
             {
                 path: ":language",
                 children: [
@@ -45,7 +45,7 @@ export const routes: Routes = [
                         children: [
                             redirectParams("", `/${PAGE_NOT_FOUND}`),
                             {
-                                path: ":id", loadComponent: () =>
+                                path: ":movieId", loadComponent: () =>
                                     import("./movie-details/movie-details.component")
                                     .then(c => c.MovieDetailsComponent),
                             },
@@ -63,48 +63,7 @@ export const routes: Routes = [
                         ],
                     },
                 ]
-            }
+            },
         ]
     },
-    {
-        path: "**",
-        component: PageNotFoundComponent
-    }
 ];
-
-
-// {
-//     path: "",
-//     component: HeaderLayoutComponent,
-//     children: [
-//         redirectParams(""),
-//         ...routesMap,
-//         {
-//             path: "movie-details",
-//             children: [
-//                 redirectParams("", `/${startPage}`),
-//                 {
-//                     path: ":id", loadComponent: () => import("./movie-details/movie-details.component")
-//                         .then(c => c.MovieDetailsComponent),
-//                     canActivate: [guardFactory(pageGuard)]
-//                 },
-//             ],
-//         },
-//         {
-//             path: searchPage,
-//             children: [
-//                 {
-//                     path: "",
-//                     loadComponent: () => import("./search-list/search-list.component")
-//                         .then(c => c.SearchListComponent),
-//                 },
-//             ],
-//             canActivate: [guardFactory(searchGuard)]
-//         },
-//     ]
-// },
-// {
-//     path: "**",
-//     component: PageNotFoundComponent
-// }
-
