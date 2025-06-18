@@ -1,6 +1,5 @@
 import {Component, inject, input, OnChanges} from '@angular/core';
 import {ListComponent} from "../list/list.component";
-import {BodyContainerComponent} from "../body-container/body-container.component";
 import {PaginationComponent} from "../pagination/pagination.component";
 import {OptionDropdownComponent} from "../option-dropdown/option-dropdown.component";
 import {RouterService} from "../router.service";
@@ -10,7 +9,7 @@ import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-movie-list',
-    imports: [BodyContainerComponent, PaginationComponent, OptionDropdownComponent, ListComponent],
+    imports: [PaginationComponent, OptionDropdownComponent, ListComponent],
     template: `
 
         @if (results && results.length > 0) {
@@ -29,7 +28,7 @@ export class MovieListComponent implements OnChanges {
 
     results!: any[];
     totalPages!: number;
-    display = "movie-list";
+    display = "movie-grid";
 
     language = input.required<LanguageCode>();
     page = input.required({transform: (value: string) => Number(value)});
@@ -43,14 +42,15 @@ export class MovieListComponent implements OnChanges {
         });
     };
 
-    ngOnChanges():void {
+    ngOnChanges(): void {
         const language = this.language();
         const page = this.page();
         const sort_by = `${this.sort_criterion()}.${this.sort_direction()}` as SortParam;
-        const path = this.routerService.getUrlSegment(1);
-        this.movieService.getMovies(path, {language, page, sort_by}).subscribe(response => {
-            this.results = response["results"];
-            this.totalPages = response["totalPages"];
+        const category = this.routerService.getCategorySegment();
+        this.movieService.getMovies(category, {language, page, sort_by}).subscribe(response => {
+            const {results, totalPages} = response;
+            this.results = results;
+            this.totalPages = totalPages;
         });
     }
 

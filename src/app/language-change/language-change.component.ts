@@ -1,8 +1,7 @@
 import {Component, inject, input, OnInit} from '@angular/core';
 import {ButtonComponent} from "../button/button.component";
-import {LANGUAGE_DETAILS, EnumLanguageCode, LanguageCode} from "../constants";
+import {LANGUAGE_DETAILS, LanguageCode} from "../constants";
 import {RouterService} from "../router.service";
-import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-language-change',

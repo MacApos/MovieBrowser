@@ -1,13 +1,12 @@
 import {Route, Routes} from '@angular/router';
 import {HeaderLayoutComponent} from "./header-layout/header-layout.component";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
-import {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY} from "./constants"
+import {PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY, MOVIE_DETAILS_PAGE, START_PAGE, DEFAULT_LANGUAGE} from "./constants";
 import {matchGuard} from "./match.guard";
 
-function redirectParams(path: string,
-                        redirectTo = START_PAGE,
-                        pathMatch = "full"): Record<string, string> {
-    return {path, redirectTo, pathMatch};
+function redirectParams(path: string, redirectTo: string, pathMatch = "full") {
+    const route: Record<string, string> = {path, redirectTo, pathMatch};
+    return route;
 }
 
 const routesMap = Object.values(MOVIE_CATEGORY).map((value): Route => {
@@ -28,28 +27,26 @@ export const routes: Routes = [
     {
         path: "",
         component: HeaderLayoutComponent,
-        canMatch:[matchGuard],
         children: [
-            redirectParams("", START_PAGE),
-            {
-                path: PAGE_NOT_FOUND,
-                component: PageNotFoundComponent
-            },
+
+
+            redirectParams("", `${DEFAULT_LANGUAGE}/${START_PAGE}`),
             {
                 path: ":language",
+                canMatch: [matchGuard],
                 children: [
-                    redirectParams("", `/${START_PAGE}` ),
+                    redirectParams("", START_PAGE),
                     ...routesMap,
                     {
-                        path: "movie-details",
+                        path: MOVIE_DETAILS_PAGE,
                         children: [
                             redirectParams("", `/${PAGE_NOT_FOUND}`),
                             {
                                 path: ":movieId", loadComponent: () =>
                                     import("./movie-details/movie-details.component")
-                                    .then(c => c.MovieDetailsComponent),
+                                        .then(c => c.MovieDetailsComponent),
                             },
-                        ],
+                        ]
                     },
                     {
                         path: SEARCH_PAGE,
@@ -58,12 +55,17 @@ export const routes: Routes = [
                                 path: "",
                                 loadComponent: () =>
                                     import("./search-list/search-list.component")
-                                    .then(c => c.SearchListComponent),
+                                        .then(c => c.SearchListComponent),
                             },
                         ],
                     },
                 ]
             },
+            {
+                path: "**",
+                component: PageNotFoundComponent
+            },
         ]
     },
+
 ];

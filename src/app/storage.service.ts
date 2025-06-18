@@ -1,16 +1,8 @@
-import {inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
+import {inject, Injectable, PLATFORM_ID} from '@angular/core';
 import {isPlatformBrowser} from "@angular/common";
-import {Theme} from "./mode-toggle/mode-toggle.component";
-import {EnumLanguageCode, SortParam} from "./constants";
+import {Theme} from "./constants";
 
-
-interface StateType {
-    [key: string]: string | number;
-    language: EnumLanguageCode,
-    sort_by: SortParam
-}
-
-interface StorageType {
+interface StorageI {
     [key: string]: string | number;
     theme: Theme,
 }
@@ -21,20 +13,13 @@ interface StorageType {
 export class StorageService {
     platformId = inject(PLATFORM_ID);
     isBrowser = isPlatformBrowser(this.platformId);
-    initStorage: StorageType = {
+    initStorage: StorageI = {
         theme: Theme.dark,
     };
 
     storageGuard: Record<string, (param: string) => boolean> = {
         theme: param => Object.values(Theme).includes(param as Theme),
     };
-
-    stateSignal = signal({});
-
-    updateState(update: object) {
-        this.stateSignal.update(current => ({...current, ...update}));
-    }
-
 
     initiateStorage() {
         if (this.isBrowser) {

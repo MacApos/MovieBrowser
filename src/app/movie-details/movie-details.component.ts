@@ -9,33 +9,18 @@ import {MovieCardComponent} from "../movie-card/movie-card.component";
         MovieCardComponent,
     ],
     template: `
-            @if (movie) {
-                <app-movie-card [language]="language()" [movie]="movie"/>
-            } @else {
-                <div>spinner</div>
-            }
-
-
-            <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="..." class="d-block w-100" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="..." class="d-block w-100" alt="...">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="..." class="d-block w-100" alt="...">
-                    </div>
-                </div>
-            </div>
-
-
+        @if (movie && recommendation) {
+            <app-movie-card [language]="language()" [movie]="movie" [recommendation]="recommendation"/>
+           
+        } @else {
+            <div>spinner</div>
+        }
     `,
 })
 export class MovieDetailsComponent implements OnChanges {
     movieService = inject(MovieService);
     movie!: Record<string, any>;
+    recommendation!: any[];
 
     language = input.required<LanguageCode>();
     movieId = input.required<number>();
@@ -44,7 +29,8 @@ export class MovieDetailsComponent implements OnChanges {
         const moveId = this.movieId();
         const language = this.language();
         this.movieService.getMovieById(moveId, language).subscribe(response => {
-            response.forEach(details=>this.movie = {...this.movie, ...details})
+            response.slice(0, 2).forEach(details => this.movie = {...this.movie, ...details});
+            this.recommendation = response[2];
         });
     }
 

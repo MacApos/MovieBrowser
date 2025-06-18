@@ -1,14 +1,9 @@
 import { Component, inject} from '@angular/core';
 import {StorageService} from "../storage.service";
 import {ButtonComponent} from "../button/button.component";
-import {NgOptimizedImage} from "@angular/common";
+import {Theme} from "../constants";
 
 declare function setTheme(theme: string): void;
-
-export enum Theme {
-    light = "light",
-    dark = "dark",
-}
 
 @Component({
     selector: 'app-mode-toggle',

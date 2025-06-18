@@ -1,11 +1,11 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpParams, HttpResponse} from "@angular/common/http";
+import {HttpClient, HttpParams, HttpResponse} from "@angular/common/http";
 import {environment} from "../environments/environment";
-import {catchError, EMPTY, filter, forkJoin, map, merge, tap, throwError} from "rxjs";
+import {catchError, forkJoin, filter, map, tap, EMPTY} from "rxjs";
 import {CategoryPath, LanguageCode, MOVIE_CATEGORY, PAGE_NOT_FOUND, QueryParams} from "./constants";
 import {RouterService} from "./router.service";
 
-type MapResponse = (response: Record<string, any>) => Record<string, any>;
+type MapResponseFn = (response: Record<string, any>) => any ;
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +18,6 @@ export class MovieService {
     searchUrl = "/search";
     discoverUrl = "/discover";
     movieDetailsUrl = "/movie";
-    movieCreditsUrl = "/movie";
 
     imageUrl = "https://image.tmdb.org/t/p";
     headers = {
@@ -27,12 +26,12 @@ export class MovieService {
     };
 
     getImage(path: string) {
-        return path ? `${this.imageUrl}/w500${path}` : "/img/poster_unavailable_dark.svg";
+        return path ? `${this.imageUrl}/w500${path}` : "/img/poster_unavailable.svg";
     }
 
-    getMovies(path: string, params: QueryParams = {}) {
+    getMovies(category: string, params: QueryParams = {}) {
         let httpParams = new HttpParams({
-            fromString: MOVIE_CATEGORY[path as CategoryPath].params
+            fromString: MOVIE_CATEGORY[category as CategoryPath].params
         });
         for (const [key, value] of Object.entries(params)) {
             if (!httpParams.has(key) && value) {
@@ -42,28 +41,38 @@ export class MovieService {
         return this.getRequest(this.discoverUrl + this.baseParams, httpParams, this.mapMovies);
     }
 
-    searchMovie(query: string, params: QueryParams = {}) {
-        const httpParams = new HttpParams({fromObject: {query, ...params}});
-        return this.getRequest(this.searchUrl + this.baseParams, httpParams, this.mapMovies);
+    searchMovie(query: string, language: LanguageCode) {
+        const httpParams = new HttpParams({fromObject: {language, page: 1, query}});
+        return this.getRequest(this.searchUrl + this.baseParams, httpParams, this.sortMovies);
     }
 
     getMovieById(movieId: number, language: LanguageCode) {
         const httpParams = new HttpParams({fromObject: {language}});
+        const movieIdUrl = [this.movieDetailsUrl, movieId].join("/");
         return forkJoin([
-            this.getRequest(this.movieDetailsUrl + "/" + movieId, httpParams, this.mapMovieDetails),
-            this.getRequest([this.movieCreditsUrl, movieId, "credits"].join("/"), httpParams, this.mapMovieCredits)]
+            this.getRequest(movieIdUrl, httpParams, this.mapMovieDetails),
+            this.getRequest([movieIdUrl, "credits"].join("/"), httpParams, this.mapMovieCredits),
+            this.getRequest([movieIdUrl, "recommendations"].join("/"), httpParams, this.getResults)]
         );
     }
 
-    mapMovies: MapResponse = (response) => {
+    getResults = (response: Record<string, any>): Record<string, any>[] =>
+        response["results"];
+
+    mapMovies: MapResponseFn = (response) => {
         const result: Record<string, any> = {
             totalPages: response["total_pages"],
-            results: response["results"]
+            results: this.getResults(response)
         };
         return result;
     };
 
-    mapMovieDetails: MapResponse = (response) => {
+    sortMovies = (response: Record<string, any>) => {
+        return this.getResults(response).sort((a, b) =>
+            b["popularity"] - a["popularity"]);
+    };
+
+    mapMovieDetails: MapResponseFn = (response) => {
         const runtime = response["runtime"];
         const result: Record<string, any> = {
             genres: response["genres"].map((genre: Record<string, any>) => genre["name"]).join(", "),
@@ -73,7 +82,7 @@ export class MovieService {
         return {...response, ...result};
     };
 
-    mapMovieCredits: MapResponse = (response) => {
+    mapMovieCredits: MapResponseFn = (response) => {
         const result: Record<string, any> = {
             cast: response["cast"]
                 .filter((member: Record<string, any>) => member["known_for_department"] === "Acting" && member["order"] < 3)
@@ -86,7 +95,7 @@ export class MovieService {
         return result;
     };
 
-    getRequest(url: string, params: HttpParams, mapResponseFn: MapResponse) {
+    getRequest(url: string, params: HttpParams, mapResponse: MapResponseFn) {
         return this.http.get(this.baseUrl + url, {
             params,
             headers: this.headers,
@@ -98,20 +107,16 @@ export class MovieService {
             }),
             map((response: HttpResponse<Record<string, any>>) => response.body),
             tap(value => {
-                if (!value) {
+                const page = Number(params.get("page"));
+                const totalPages = value?.["total_pages"];
+                if (!value || totalPages && page > Math.min(30, totalPages)) {
                     this.routerService.navigate([PAGE_NOT_FOUND]);
                     return EMPTY;
-                }
-                if (params.has("page") && value["total_pages"]) {
-                    if (Number(params.get("page")) > Math.min(30, value["total_pages"])) {
-                        this.routerService.navigate([PAGE_NOT_FOUND]);
-                        return EMPTY;
-                    }
                 }
                 return value;
             }),
             filter((value) => value != null),
-            map(mapResponseFn),
+            map(mapResponse),
         );
     }
 }

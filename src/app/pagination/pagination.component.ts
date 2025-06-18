@@ -1,8 +1,7 @@
 import {Component, computed, DoCheck, HostListener, inject, input, InputSignal} from '@angular/core';
-import { NgClass, NgTemplateOutlet } from "@angular/common";
+import {NgClass, NgTemplateOutlet} from "@angular/common";
 import {WINDOW} from "../window.token";
 import {RouterService} from "../router.service";
-import {PAGE_NOT_FOUND} from "../constants";
 
 export enum WindowWidth {
     md = 768,
@@ -70,9 +69,9 @@ export enum WindowWidth {
             </div>
         }`,
     imports: [
-    NgClass,
-    NgTemplateOutlet
-],
+        NgClass,
+        NgTemplateOutlet
+    ],
 })
 export class PaginationComponent implements DoCheck {
     routerService = inject(RouterService);
@@ -82,22 +81,17 @@ export class PaginationComponent implements DoCheck {
         {transform: (value) => Math.min(value, 30)});
     activePage = input.required<number>();
     pageNavigation = input.required<(page: number) => void>();
-    range!:number
+    range!: number;
     pagination!: number[];
 
     @HostListener('window:resize', ['$event'])
     onWindowResize() {
-        this.range = this.getRange(this.window, this.maxPage());
+        this.setRange(this.window, this.maxPage());
     }
 
     ngDoCheck() {
-        this.range = this.getRange(this.window, this.maxPage());
-        const maxPage = this.maxPage();
-        const activePage = this.activePage();
-        // if (activePage > maxPage) {
-        //     this.routerService.navigate(["/", PAGE_NOT_FOUND]);
-        // }
-        this.pagination = this.getPagination(this.range, maxPage, activePage);
+        this.setRange(this.window, this.maxPage());
+        this.setPagination(this.range, this.maxPage(), this.activePage());
     }
 
     handleClick = (page: number) => {
@@ -109,22 +103,23 @@ export class PaginationComponent implements DoCheck {
     handleFirst = () => this.handleClick(1);
     handleLast = () => this.handleClick(this.maxPage());
 
-    getRange(window: Window | null, length: number) {
+    setRange(window: Window | null, length: number) {
+        let range = 1;
         if (window) {
             const width = window.innerWidth;
-            const number = width < WindowWidth.md ? 1 : Math.min(length, width < WindowWidth.lg ? 3 : 5);
-            return number;
+            range = width < WindowWidth.md ? 1 : Math.min(length, width < WindowWidth.lg ? 3 : 5);
         }
-        return 1;
+        this.range = range;
     }
 
-    getPagination(range: number, length: number, active: number) {
+    setPagination(range: number, length: number, active: number) {
         if (range >= length) {
-            return Array.from({length}, (_: any, i: number) => i + 1);
+            this.pagination = Array.from({length}, (_: any, i: number) => i + 1);
+            return;
         }
         const end = Math.ceil(active / range) * range;
         const start = end - range + 1;
-        return Array.from({length: range}, (_: any, i: number) => start + i);
+        this.pagination = Array.from({length: range}, (_: any, i: number) => start + i);
     }
 }
 

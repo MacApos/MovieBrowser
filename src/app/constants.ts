@@ -20,15 +20,16 @@ type QueryParams = {
     page?: number,
 }
 
-type LanguageCode = "en" | "pl"
 
-
-enum EnumLanguageCode {
-    english = "en",
-    polish = "pl"
+enum Theme {
+    light = "light",
+    dark = "dark",
 }
 
-const LANGUAGE_DETAILS: Record<LanguageCode, Record<string , string>> = {
+type LanguageCode = "en" | "pl"
+
+const ALL_LANGUAGES: LanguageCode[] = ["en", "pl"];
+const LANGUAGE_DETAILS: Record<LanguageCode, Record<string, string>> = {
     en: {
         code: "en-US",
         icon: "usa"
@@ -39,10 +40,12 @@ const LANGUAGE_DETAILS: Record<LanguageCode, Record<string , string>> = {
     }
 };
 
-const START_PAGE = "en/now-playing/1";
+const DEFAULT_LANGUAGE:LanguageCode = "en";
+const DEFAULT_CATEGORY:CategoryPath = "now-playing";
+const START_PAGE = `${DEFAULT_CATEGORY}/1`;
 const PAGE_NOT_FOUND = "page-not-found";
 const SEARCH_PAGE = "search";
-const MOVIE_DETAILS = "movie-details";
+const MOVIE_DETAILS_PAGE = "movie-details";
 
 const presentDate = new Date();
 const presentFormattedDate = formatDate(new Date());
@@ -78,6 +81,17 @@ function formatDate(date: Date) {
     return `${date.getFullYear()}-${padStart(date.getMonth() + 1)}-${padStart(date.getDate())}`;
 }
 
-export {START_PAGE, PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_DETAILS, MOVIE_CATEGORY, LANGUAGE_DETAILS, EnumLanguageCode};
+export {
+    DEFAULT_LANGUAGE,
+    DEFAULT_CATEGORY,
+    START_PAGE,
+    PAGE_NOT_FOUND,
+    SEARCH_PAGE,
+    MOVIE_DETAILS_PAGE,
+    MOVIE_CATEGORY,
+    LANGUAGE_DETAILS,
+    ALL_LANGUAGES,
+    Theme
+};
 export type {CategoryPath, SortCriterion, SortDirection, SortParam, Sort, CategoryDetails, QueryParams, LanguageCode};
 

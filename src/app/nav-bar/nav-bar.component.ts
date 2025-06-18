@@ -85,7 +85,7 @@ export class NavBarComponent {
     middleIndex = this.movieCategory.length / 2;
 
     handleChangeCategory(category: CategoryDetails) {
-        const language = this.routerService.getUrlSegment(0);
+        const language = this.routerService.getLanguageSegment();
         this.router.navigate(["/", language, category.path, "1"]);
     }
 }

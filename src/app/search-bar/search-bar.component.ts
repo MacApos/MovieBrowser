@@ -30,10 +30,10 @@ export class SearchBarComponent implements OnInit {
 
     searchMovie() {
         const query = this.query.trim();
-        const path = this.routerService.getUrlSegment(0);
-        if (path != SEARCH_PAGE && query.length < 3) {
+        const language = this.routerService.getLanguageSegment();
+        if (query.length < 3) {
             return;
         }
-        this.routerService.navigate([this.routerService.getUrlSegment(0), SEARCH_PAGE], {queryParams: {query, page: 1}});
+        this.routerService.navigate(["/", language, SEARCH_PAGE], {queryParams: {query, page: 1}});
     }
 }

@@ -27,8 +27,8 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
                          (mouseenter)="handleMouseEnter()" (mouseleave)="handleMouseLeave()">
                         <app-button-component icon="funnel-fill"
                                               [attributes]="{class:'btn-success', 
-                                              disabled:areCriteriaPresent ? '' : 'disabled'}"/>
-                        @if (areCriteriaPresent) {
+                                              disabled:showCriteria ? '' : 'disabled'}"/>
+                        @if (showCriteria) {
                             <div class="m-0 position-absolute" id="sort-option-container" [ngStyle]="containerStyle">
                                 @for (criterion of sortCriteria; track criterion) {
                                     @let name = sortObj[criterion]["name"];
@@ -71,7 +71,7 @@ export class OptionDropdownComponent implements OnChanges {
     routerService = inject(RouterService);
     activatedRoute = inject(ActivatedRoute);
     sortCriteria !: SortCriterion[];
-    areCriteriaPresent!: boolean;
+    showCriteria!: boolean;
 
     categorySort: Record<CategoryPath, SortCriterion[]> = {
         "now-playing": ["popularity", "vote_average", "primary_release_date"],
@@ -93,8 +93,8 @@ export class OptionDropdownComponent implements OnChanges {
     };
 
     ngOnChanges(): void {
-        this.sortCriteria = this.categorySort[this.routerService.getUrlSegment(1) as CategoryPath];
-        this.areCriteriaPresent = this.sortCriteria.length > 0;
+        this.sortCriteria = this.categorySort[this.routerService.getCategorySegment()];
+        this.showCriteria = this.sortCriteria.length > 0;
         this.spanRotation = this.activeDirection() === "desc" ? -180 : 0;
     }
 
@@ -109,7 +109,7 @@ export class OptionDropdownComponent implements OnChanges {
     }
 
     handleMouseEnter() {
-        this.overflow = this.areCriteriaPresent
+        this.overflow = this.showCriteria
         const length = this.sortCriteria.length;
         this.containerHeight = length * 64 + Math.abs(length - 1) * 12;
     }

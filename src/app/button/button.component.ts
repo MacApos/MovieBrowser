@@ -28,7 +28,7 @@ export class ButtonComponent implements OnInit {
     fill = input(false);
     dimensions = input([0, 0]);
     action = input<() => void>(() => {});
-    attributes = input<{ [key: string]: string  | any}>({});
+    attributes = input<{ [key: string]: string | any}>({});
     x!: number;
     y!: number;
 
