@@ -20,7 +20,6 @@ type QueryParams = {
     page?: number,
 }
 
-
 enum Theme {
     light = "light",
     dark = "dark",
@@ -40,8 +39,8 @@ const LANGUAGE_DETAILS: Record<LanguageCode, Record<string, string>> = {
     }
 };
 
-const DEFAULT_LANGUAGE:LanguageCode = "en";
-const DEFAULT_CATEGORY:CategoryPath = "now-playing";
+const DEFAULT_LANGUAGE: LanguageCode = "en";
+const DEFAULT_CATEGORY: CategoryPath = "now-playing";
 const START_PAGE = `${DEFAULT_CATEGORY}/1`;
 const PAGE_NOT_FOUND = "page-not-found";
 const SEARCH_PAGE = "search";
@@ -74,6 +73,13 @@ const MOVIE_CATEGORY: Record<CategoryPath, CategoryDetails> = {
     }
 };
 
+enum WindowWidth {
+    sm = 576,
+    md = 768,
+    lg = 992,
+    xl = 1200,
+}
+
 function formatDate(date: Date) {
     const padStart = (num: number) => {
         return String(num).padStart(2, '0');
@@ -91,7 +97,8 @@ export {
     MOVIE_CATEGORY,
     LANGUAGE_DETAILS,
     ALL_LANGUAGES,
-    Theme
+    Theme,
+    WindowWidth
 };
 export type {CategoryPath, SortCriterion, SortDirection, SortParam, Sort, CategoryDetails, QueryParams, LanguageCode};
 

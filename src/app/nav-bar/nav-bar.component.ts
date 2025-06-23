@@ -34,7 +34,7 @@ import {Router} from "@angular/router";
 
             <ng-template #button let-category="category">
                 <button class="w-100 btn btn-info rounded-5"
-                        (click)="handleChangeCategory(category)">
+                        (click)="onCategoryChange(category)">
                     {{ category.name }}
                 </button>
 
@@ -84,7 +84,7 @@ export class NavBarComponent {
     movieCategory = Object.values(MOVIE_CATEGORY);
     middleIndex = this.movieCategory.length / 2;
 
-    handleChangeCategory(category: CategoryDetails) {
+    onCategoryChange(category: CategoryDetails) {
         const language = this.routerService.getLanguageSegment();
         this.router.navigate(["/", language, category.path, "1"]);
     }

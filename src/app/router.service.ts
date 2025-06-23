@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {ActivatedRoute, NavigationExtras, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, NavigationExtras, Router} from "@angular/router";
 import {
     ALL_LANGUAGES,
     CategoryPath, DEFAULT_CATEGORY,
@@ -9,6 +9,7 @@ import {
     MOVIE_DETAILS_PAGE,
     SEARCH_PAGE
 } from "./constants";
+import {filter} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -43,5 +44,16 @@ export class RouterService {
     getQueryParams() {
         return this.activatedRoute.snapshot.queryParams;
     }
+
+    scrollToTop() {
+        this.router.events
+            .pipe(filter(event => event instanceof NavigationEnd))
+            .subscribe(() => {
+                if (window) {
+                    window.scrollTo({top: 0, behavior: "smooth"});
+                }
+            });
+    }
+
 
 }

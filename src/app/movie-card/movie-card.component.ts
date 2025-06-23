@@ -1,21 +1,19 @@
 import {
+    afterEveryRender,
     afterNextRender,
-    Component, computed,
-    ElementRef,
+    Component,
     HostListener,
     inject,
-    input,
-    OnChanges,
-    OnInit,
-    SimpleChanges,
-    ViewChild
+    input, OnChanges,
+    OnInit, signal,
 } from '@angular/core';
-import {RouterLink} from "@angular/router";
+import {NavigationEnd, Router, RouterLink} from "@angular/router";
 import {NgClass, NgStyle, NgTemplateOutlet} from "@angular/common";
 import {MovieService} from "../movie.service";
 import {RouterService} from "../router.service";
-import {LanguageCode, MOVIE_DETAILS_PAGE} from "../constants";
-import {ButtonComponent} from "../button/button.component";
+import {LanguageCode, MOVIE_DETAILS_PAGE, WindowWidth} from "../constants";
+import {WINDOW} from "../window.token";
+import {filter} from "rxjs";
 
 @Component({
     selector: 'app-movie-card',
@@ -24,66 +22,25 @@ import {ButtonComponent} from "../button/button.component";
         NgTemplateOutlet,
         NgClass,
         NgStyle,
-        ButtonComponent,
     ],
-    styles: `
-        @keyframes spin {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(calc((250px + 1rem) * -5))
-            }
-        }
-
-        .carousel-container {
-            height: 500px;
-
-            &::before,
-            &::after {
-                background: linear-gradient(to right, rgba(var(--bs-tertiary-bg-rgb), 0.75) 0%, rgba(var(--bs-tertiary-bg-rgb), 0) 100%);
-                content: "";
-                height: 100%;
-                position: absolute;
-                width: 100px;
-                z-index: 2;
-            }
-
-            &::before {
-                left: 0;
-                top: 0;
-            }
-
-            &::after {
-                right: 0;
-                top: 0;
-                transform: rotateZ(180deg);
-            }
-
-            .card img {
-                height: 375px
-            }
-
-            .carousel-animation {
-                /*animation: spin 25s linear infinite;*/
-            }
-        }
-    `,
     template: `
         <div class="card h-100 gap-3">
             <div class="row h-100 mx-0">
                 <div class="col px-0">
-                    <ng-template #img>
-                        <img class="rounded-top object-fit-contain w-100" alt="Poster"
-                             [src]="movieService.getImage(movie()['poster_path'])">
-                    </ng-template>
-                    @if (showDetails) {
-                        <ng-container [ngTemplateOutlet]="img"/>
-                    } @else {
-                        <a [routerLink]="['/', language(), MOVIE_DETAILS, movie()['id']]">
-                            <ng-container [ngTemplateOutlet]="img"/>
+                    <ng-template let-movieData="movieData" let-redirect="redirect"
+                                 let-className="className" #img>
+                        @let id = movieData['id'];
+                        <a [routerLink]="redirect ?  ['/', language(), MOVIE_DETAILS, id] : null">
+                            <img [class]="className" [alt]="'Poster' + id"
+                                 [src]="movieService.getImage(movieData['poster_path'])">
                         </a>
-                    }
+                    </ng-template>
+
+                    <ng-container [ngTemplateOutlet]="img"
+                                  [ngTemplateOutletContext]="{
+                                  movieData: movie(),
+                                  redirect:!showDetails,
+                                  className:'rounded w-100'}"/>
                 </div>
                 <div class="col px-0">
                     <div class="card-body d-flex flex-column justify-content-between align-items-start p-3"
@@ -99,7 +56,7 @@ import {ButtonComponent} from "../button/button.component";
                             </h4>
                         </div>
                         @if (showDetails) {
-                            <p>Cast: {{ movie()["genres"] }}</p>
+                            <p>Genres: {{ movie()["genres"] }}</p>
                             <p>Cast: {{ movie()["cast"] }}</p>
                             <p>Director: {{ movie()["crew"] }}</p>
                             <p>Runtime: {{ movie()["runtime"] }}</p>
@@ -124,112 +81,105 @@ import {ButtonComponent} from "../button/button.component";
                     </div>
                 </div>
             </div>
+
             @if (recommendation().length > 0) {
-                <div class="row mx-0 mb-3"
-                     (mouseenter)="animationPlayState='paused'"
-                     (mouseleave)="animationPlayState='running'">
-                    <div class="col px-2">
-                        <div class="position-relative overflow-hidden w-100"
-                             [ngClass]="{'carousel-container':showCarousel}">
-                            <div class="d-flex h-100 gap-2" [style]="carouselStyle">
-                                @for (movie of recommendation(); track $index) {
-                                    <div class="card bg-danger scale" [ngClass]="{'carousel-animation':showCarousel}"
-                                         [ngStyle]="cardStyle">
-                                        <img [src]="movieService.getImage(movie['poster_path'])"
-                                             [alt]="'poster '+movie['id']" class="rounded-top-2"/>
-                                        <div class="card-body p-2">
-                                            <h4 class="card-title">
-                                                {{ movie["title"] }}
-                                            </h4>
+                <div class="row mx-0 mb-3">
+                    <div class="col d-flex flex-column px-2">
+                        <h3 class="ps-1">Similar</h3>
+                        <div id="recommendationCarousel" class="carousel slide rounded-2 w-100">
+                            <div class="carousel-inner h-100" [ngStyle]="{overflow:overflow ? 'visible' : 'hidden'}">
+                                @for (recommendation of recommendationArray(); track $index) {
+                                    <div class="carousel-item h-100" [ngClass]="{active:$first}">
+                                        <div class="d-grid gap-3 position-relative h-100 p-1" [ngStyle]="carouselGrid">
+                                            @for (movie of recommendation; track movie["id"]) {
+                                                <div class="card scale h-100" #card (mouseenter)="this.overflow = true">
+                                                    <ng-container [ngTemplateOutlet]="img" [ngTemplateOutletContext]="{
+                                                    movieData: movie,
+                                                    redirect:true,
+                                                    className:'rounded-top w-100'}"/>
+                                                    <div class="card-body p-2">
+                                                        <h4 class="card-title">
+                                                            {{ movie["title"] }}
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 }
                             </div>
-                                <button class="carousel-control-prev bg-info">
-                                    <span class="carousel-control-prev-icon"></span>
+                            <ng-template #carouselControl let-slide="slide">
+                                <button [class]="'rounded-start-inherit m-1 carousel-control-' + slide"
+                                        data-bs-target="#recommendationCarousel" [attr.data-bs-slide]="slide"
+                                        (click)="overflow=false">
+                                    <span [className]="'carousel-control-' + slide + '-icon'"></span>
                                 </button>
-                            <!--                            <button class="carousel-control-next" type="button" data-bs-target="#multiCarousel" data-bs-slide="next">-->
-                            <!--                                <span class="carousel-control-next-icon"></span>-->
-                            <!--                            </button>-->
+                            </ng-template>
+                            <ng-container [ngTemplateOutlet]="carouselControl"
+                                          [ngTemplateOutletContext]="{slide:'next'}"/>
+                            <ng-container [ngTemplateOutlet]="carouselControl"
+                                          [ngTemplateOutletContext]="{slide:'prev'}"/>
                         </div>
                     </div>
                 </div>
             }
-
         </div>
     `,
 })
-export class MovieCardComponent implements OnInit, OnChanges {
+export class MovieCardComponent implements OnChanges{
     language = input.required<LanguageCode>();
     movie = input.required<Record<string, any>>();
     recommendation = input<Record<string, any>[]>([]);
-    length = computed(() => this.recommendation().length);
-
-    gap = 16;
-    cardWidth = 250;
-    cardSpace = this.cardWidth + this.gap;
-    showCarousel = true;
-    animationPlayState: "paused" | "running" = "paused";
-
-    carouselStyle = {
-        width: `100%`
-    };
-
-    get cardStyle() {
-        return {
-            'animation-play-state': this.animationPlayState,
-            width: `${this.cardWidth}px`,
-            flex: `0 0 auto`
-        };
-    }
-
-
-    @ViewChild("carouselContainer") private carouselContainer!: ElementRef;
+    recommendationArray = signal<Record<string, any>[][]>([]);
 
     @HostListener('window:resize', ['$event'])
     onWindowResize() {
-        // this.setShowCarousel();
+        this.setRecommendationArray();
     }
 
     movieService = inject(MovieService);
     routerService = inject(RouterService);
+    router = inject(Router);
+    window = inject(WINDOW);
 
     showDetails!: boolean;
+    overflow = true;
+    carouselRange = 4;
 
-    constructor() {
-        afterNextRender(() => {
-            if (this.carouselContainer) {
-                // this.setShowCarousel();
-            }
-        });
+    get carouselGrid() {
+        return {
+            "grid-template-columns": `repeat(${this.carouselRange}, 1fr)`
+        };
     }
 
-    ngOnInit(): void {
+    ngOnChanges(): void {
+        this.routerService.scrollToTop()
         this.showDetails = this.routerService.getUrlSegment(1) === MOVIE_DETAILS_PAGE;
-        console.log("init");
+        this.setRecommendationArray();
     }
 
-    setShowCarousel() {
-        const width = this.carouselContainer.nativeElement.offsetWidth;
-        const length = this.recommendation().length;
-        this.showCarousel = length > width / this.cardSpace;
+    setRecommendationArray() {
+        if (!this.window) {
+            return;
+        }
+        const width = this.window.innerWidth;
+        if (width >= WindowWidth.xl) {
+            this.carouselRange = 4;
+        } else if (width >= WindowWidth.md) {
+            this.carouselRange = 3;
+        } else if (width >= WindowWidth.sm) {
+            this.carouselRange = 2;
+        } else {
+            this.carouselRange = 1;
+        }
+
+        const array = [];
+        for (let i = 0; i < this.recommendation().length; i += this.carouselRange) {
+            array.push(this.recommendation().slice(i, i + this.carouselRange));
+        }
+        this.recommendationArray.set(array);
     }
 
     protected readonly Math = Math;
     protected readonly MOVIE_DETAILS = MOVIE_DETAILS_PAGE;
-
-    ngOnChanges(): void {
-    }
-
-
-    handleMouseEnter() {
-        this.animationPlayState = 'paused';
-    }
-
-    handleMouseLeave() {
-        this.animationPlayState = 'running';
-    }
-
-    handleNext() {
-    }
 }

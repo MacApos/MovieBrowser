@@ -9,7 +9,7 @@ import {RouterService} from "../router.service";
         ButtonComponent
     ],
     template: `
-        <app-button-component [action]="handleChangeLanguage.bind(this)" [fill]="true"
+        <app-button-component [action]="onLanguageChange.bind(this)" [fill]="true"
                               [icon]="languageDetails['icon']"/>
     `,
 })
@@ -22,7 +22,7 @@ export class LanguageChangeComponent implements OnInit {
         this.languageDetails = LANGUAGE_DETAILS[this.language()];
     }
 
-    handleChangeLanguage() {
+    onLanguageChange() {
         const urlSegments = this.routerService.getUrlSegments();
         const queryParams = this.routerService.getQueryParams();
         urlSegments[0].path = this.language();

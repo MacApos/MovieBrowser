@@ -24,7 +24,7 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
                      [ngStyle]="{'overflow': overflow ? 'visible' : 'hidden'}" id="option-dropdown">
                     <app-button-component icon="list" [attributes]="{ class:'btn-success'}" id="display"/>
                     <div class="position-relative d-flex justify-content-center align-items-end gap-2" id="sort-option"
-                         (mouseenter)="handleMouseEnter()" (mouseleave)="handleMouseLeave()">
+                         (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
                         <app-button-component icon="funnel-fill"
                                               [attributes]="{class:'btn-success', 
                                               disabled:showCriteria ? '' : 'disabled'}"/>
@@ -33,7 +33,7 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
                                 @for (criterion of sortCriteria; track criterion) {
                                     @let name = sortObj[criterion]["name"];
                                     @let isActive = criterion === activeCriterion();
-                                    <button class="btn px-2 w-100 btn-warning" (click)="handleChangeSorting(criterion)"
+                                    <button class="btn px-2 w-100 btn-warning" (click)="onSortingChange(criterion)"
                                             id="sort-criterion">
                                         <div class="d-flex justify-content-between">
                                             <div>
@@ -98,7 +98,7 @@ export class OptionDropdownComponent implements OnChanges {
         this.spanRotation = this.activeDirection() === "desc" ? -180 : 0;
     }
 
-    handleChangeSorting(criterion: string) {
+    onSortingChange(criterion: string) {
         this.routerService.navigate([], {
             queryParams: {
                 sort_criterion: criterion,
@@ -108,13 +108,13 @@ export class OptionDropdownComponent implements OnChanges {
         });
     }
 
-    handleMouseEnter() {
+    onMouseEnter() {
         this.overflow = this.showCriteria
         const length = this.sortCriteria.length;
         this.containerHeight = length * 64 + Math.abs(length - 1) * 12;
     }
 
-    handleMouseLeave() {
+    onMouseLeave() {
         this.containerHeight = 64
     }
 

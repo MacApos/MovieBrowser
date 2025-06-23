@@ -11,14 +11,14 @@ declare function setTheme(theme: string): void;
         ButtonComponent,
     ],
     template: `
-        <app-button-component [action]="handleChangeTheme.bind(this)" [fill]="true" [icon]="theme"/>
+        <app-button-component [action]="onThemeChange.bind(this)" [fill]="true" [icon]="theme"/>
     `,
 })
 export class ModeToggleComponent {
     storageService = inject(StorageService);
     theme: Theme = this.storageService.getItem("theme");
 
-    handleChangeTheme() {
+    onThemeChange() {
         this.theme = this.theme === Theme.dark ? Theme.light : Theme.dark;
         this.storageService.setItem("theme", this.theme);
         setTheme(this.theme);

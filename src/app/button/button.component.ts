@@ -13,7 +13,7 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
                 [class]="this.attributes()['class']"
                 [ngStyle]="this.attributes()['style']"
                 [disabled]="this.attributes()['disabled']"
-                (click)="handleClick()">
+                (click)="onClick()">
             @if (fill()) {
                 <img ngSrc="/img/{{icon()}}.svg" alt="{{icon()}}" fill/>
             } @else {
@@ -36,7 +36,7 @@ export class ButtonComponent implements OnInit {
         [this.x, this.y] = this.dimensions();
     }
 
-    handleClick() {
+    onClick() {
         const actionFn = this.action();
         if (actionFn) {
             actionFn();

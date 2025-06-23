@@ -136,6 +136,29 @@ p {
     --bs-pagination-font-size: var(--bs-btn-font-size-root);
 }
 
+/*6109*/
+.carousel-control-prev,
+.carousel-control-next {
+    width: 10%;
+    opacity: 0;
+    filter: none;
+    background: linear-gradient(to right, rgba(var(--bs-tertiary-bg-rgb), 1) 0%, rgba(var(--bs-tertiary-bg-rgb), 0) 100%);
+    transition: all 0.2s ease-in;
+}
+
+.carousel-control-next {
+    transform: rotateZ(180deg);
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+}
+
+.carousel-control-next-icon {
+    transform: rotateZ(180deg);
+}
+
 /*7638*/
 .border-dark-subtle-fixed {
     border-color: var(--bs-dark-border-subtle-fixed) !important;
@@ -173,9 +196,31 @@ p {
     background: linear-gradient(to right, rgba(var(--bs-tertiary-bg-rgb), 1) 0%, rgba(var(--bs-tertiary-bg-rgb), 0) 50%);
 }
 
+/*8971*/
+.rounded-inherit {
+    border-radius: inherit;
+}
+
+
+.rounded-top-inherit {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+
+.rounded-start-inherit {
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+}
+
 /*12345*/
 a.card {
     text-decoration: none;
+}
+
+.card {
+    box-shadow: inset 1px 1px rgba(255, 255, 255, 0.2),
+    inset -1px -1px rgba(255, 255, 255, 0.1),
+    1px 3px 8px -1px rgba(0, 0, 0, 0.15);
 }
 
 /*custom*/
@@ -184,13 +229,13 @@ a.card {
     5px 5px 10px var(--bs-gray-900);
 }
 
+.scale {
+    transition: all 0.2s ease-in;
+}
+
 .scale:hover {
     transform: scale(1.1);
     z-index: 1;
-}
-
-#logo {
-    transition: all 0.15s ease-in;
 }
 
 #navbar > * {
@@ -358,6 +403,10 @@ a.card {
     height: 80px;
 }
 
+#pagination-center {
+    --bs-pagination-border-radius: 0;
+}
+
 #option {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
@@ -418,25 +467,6 @@ a.card {
 
 #sort-criterion span {
     transition: all 0.35s ease-in;
-}
-
-.pagination-flex {
-    --bs-pagination-border-radius: 0;
-    text-align: center;
-    display: flex;
-}
-
-#recommendation-container * {
-    animation: recommendation 5s linear infinite;
-}
-
-@keyframes recommendation {
-    0% {
-        transform: translateX(-100px);
-    }
-    100% {
-        transform: translateX(924px);
-    }
 }
 
 @media (max-width: 767.98px) {

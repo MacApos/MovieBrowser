@@ -1,12 +1,7 @@
-import {Component, computed, DoCheck, HostListener, inject, input, InputSignal} from '@angular/core';
+import {Component, DoCheck, HostListener, inject, input, InputSignal} from '@angular/core';
 import {NgClass, NgTemplateOutlet} from "@angular/common";
 import {WINDOW} from "../window.token";
-import {RouterService} from "../router.service";
-
-export enum WindowWidth {
-    md = 768,
-    lg = 992,
-}
+import {WindowWidth} from "../constants";
 
 @Component({
     selector: 'app-pagination',
@@ -19,8 +14,7 @@ export enum WindowWidth {
                             <div class="page-link p-0 w-100 h-100 d-flex justify-content-center align-items-center"
                                  (click)="action()"
                                  [ngClass]="{disabled:disable}">
-                                <svg xmlns="http://www.w3.org/2000/svg" [attr.width]="width ?? 32" viewBox="0 0 16 16"
-                                     fill="red">
+                                <svg xmlns="http://www.w3.org/2000/svg" [attr.width]="width ?? 32" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" [attr.d]="d"/>
                                 </svg>
                             </div>
@@ -32,19 +26,17 @@ export enum WindowWidth {
                               width:40,
                               d:'M11.854 3.646a.5.5 0 0 1 0 .708L8.207 8l3.647 3.646a.5.5 0 0 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 0 1 .708 0M4.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 1 0v-13a.5.5 0 0 0-.5-.5',
                               disabled:activePage()==1,
-                              action:handleFirst}"/>
+                              action:onFirst}"/>
 
                     <ng-container [ngTemplateOutlet]="chevron"
                                   [ngTemplateOutletContext]="{
                               d:'M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0',
                               disabled:activePage()==1,
-                              action:handlePrev}"/>
+                              action:onPrev}"/>
 
-                    <div class="pagination-flex">
+                    <div id="pagination-center" class="d-flex text-center">
                         @for (page of pagination; track page) {
-                            <div class="page-item"
-                                 (click)="handleClick(page)"
-                                 [ngClass]="{active:page===activePage()}">
+                            <div class="page-item" (click)="onClick(page)" [ngClass]="{active:page===activePage()}">
                                 <a class="page-link">
                                     {{ page }}
                                 </a>
@@ -56,14 +48,14 @@ export enum WindowWidth {
                                   [ngTemplateOutletContext]="{
                               d:'M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708',
                               disabled:activePage()==maxPage(),
-                              action:handleNext}"/>
+                              action:onNext}"/>
 
                     <ng-container [ngTemplateOutlet]="chevron"
                                   [ngTemplateOutletContext]="{
                               width:40,
                               d:'M4.146 3.646a.5.5 0 0 0 0 .708L7.793 8l-3.647 3.646a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708 0M11.5 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13a.5.5 0 0 1 .5-.5',
                               disabled:activePage()==maxPage(),
-                              action:handleLast}"/>
+                              action:onLast}"/>
                 </div>
 
             </div>
@@ -74,7 +66,6 @@ export enum WindowWidth {
     ],
 })
 export class PaginationComponent implements DoCheck {
-    routerService = inject(RouterService);
     window = inject(WINDOW);
 
     maxPage = input.required<number, number>(
@@ -94,14 +85,14 @@ export class PaginationComponent implements DoCheck {
         this.setPagination(this.range, this.maxPage(), this.activePage());
     }
 
-    handleClick = (page: number) => {
+    onClick = (page: number) => {
         this.pageNavigation()(page);
     };
 
-    handlePrev = () => this.handleClick(Math.max(1, this.activePage() - 1));
-    handleNext = () => this.handleClick(Math.min(this.activePage() + 1, this.maxPage()));
-    handleFirst = () => this.handleClick(1);
-    handleLast = () => this.handleClick(this.maxPage());
+    onPrev = () => this.onClick(Math.max(1, this.activePage() - 1));
+    onNext = () => this.onClick(Math.min(this.activePage() + 1, this.maxPage()));
+    onFirst = () => this.onClick(1);
+    onLast = () => this.onClick(this.maxPage());
 
     setRange(window: Window | null, length: number) {
         let range = 1;

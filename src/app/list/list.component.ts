@@ -1,9 +1,10 @@
-import {Component, inject,  input, OnChanges, } from '@angular/core';
+import {Component, inject, input, OnChanges,} from '@angular/core';
 
 import {NavigationEnd, Router, RouterLink} from "@angular/router";
 import {filter} from "rxjs";
 import {LanguageCode} from "../constants";
 import {MovieCardComponent} from "../movie-card/movie-card.component";
+import {RouterService} from "../router.service";
 
 @Component({
     selector: 'app-list',
@@ -22,16 +23,9 @@ export class ListComponent implements OnChanges {
     display = input("movie-list");
     movies = input.required<Record<string, any>[]>();
     language = input.required<LanguageCode>();
-    router = inject(Router);
+    routerService = inject(RouterService);
 
     ngOnChanges(): void {
-        this.router.events
-            .pipe(filter(event => event instanceof NavigationEnd))
-            .subscribe(() => {
-                if (window) {
-                    window.scrollTo({top: 0, behavior: "smooth"});
-                }
-            });
+        this.routerService.scrollToTop();
     }
-
 }
