@@ -1,4 +1,4 @@
-import {Component, inject, input, OnChanges, OnInit} from '@angular/core';
+import {Component, inject, input, OnChanges} from '@angular/core';
 import {MovieService} from "../movie.service";
 import {LanguageCode} from "../constants";
 import {MovieCardComponent} from "../movie-card/movie-card.component";
@@ -30,7 +30,6 @@ export class MovieDetailsComponent implements OnChanges {
         this.movieService.getMovieById(moveId, language).subscribe(response => {
             response.slice(0, 2).forEach(details => this.movie = {...this.movie, ...details});
             this.recommendation = response[2];
-            console.log(this.recommendation);
         });
     }
 

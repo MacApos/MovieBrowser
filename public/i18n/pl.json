@@ -1,0 +1,22 @@
+{
+  "searchBar": {
+    "search": "Szukaj"
+  },
+  "categoryPath": {
+    "now-playing": "Teraz w kinach",
+    "popular": "Popularne",
+    "top-rated": "Najwyżej oceniane",
+    "upcoming": "Nadchodzące"
+  },
+  "sortCriterion": {
+    "popularity": "Popularność",
+    "vote_average": "Data premiery",
+    "primary_release_date": "Średnia ocena"
+  },
+  "movie": {
+    "genres": "Gatunek",
+    "cast": "Obsada",
+    "director": "Reżyser",
+    "runtime": "Czas trwania"
+  }
+}

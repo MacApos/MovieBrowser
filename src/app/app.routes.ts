@@ -28,8 +28,6 @@ export const routes: Routes = [
         path: "",
         component: HeaderLayoutComponent,
         children: [
-
-
             redirectParams("", `${DEFAULT_LANGUAGE}/${START_PAGE}`),
             {
                 path: ":language",

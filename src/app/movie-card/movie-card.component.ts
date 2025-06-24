@@ -14,6 +14,7 @@ import {RouterService} from "../router.service";
 import {LanguageCode, MOVIE_DETAILS_PAGE, WindowWidth} from "../constants";
 import {WINDOW} from "../window.token";
 import {filter} from "rxjs";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
     selector: 'app-movie-card',
@@ -22,6 +23,7 @@ import {filter} from "rxjs";
         NgTemplateOutlet,
         NgClass,
         NgStyle,
+        TranslatePipe,
     ],
     template: `
         <div class="card h-100 gap-3">
@@ -56,10 +58,10 @@ import {filter} from "rxjs";
                             </h4>
                         </div>
                         @if (showDetails) {
-                            <p>Genres: {{ movie()["genres"] }}</p>
-                            <p>Cast: {{ movie()["cast"] }}</p>
-                            <p>Director: {{ movie()["crew"] }}</p>
-                            <p>Runtime: {{ movie()["runtime"] }}</p>
+                            <p>{{ "movie.genres" | translate }} : {{ movie()["genres"] }}</p>
+                            <p>{{ "movie.cast" | translate }}: {{ movie()["cast"] }}</p>
+                            <p>{{ "movie.director" | translate }}: {{ movie()["director"] }}</p>
+                            <p>{{ "movie.runtime" | translate }}: {{ movie()["runtime"] }}</p>
                         }
                         <p class="card-text">
                             {{ movie()["overview"] }}

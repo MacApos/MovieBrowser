@@ -1,4 +1,4 @@
-@import "./assets/css/bootstrap.css";
+@import "../public/css/bootstrap.css";
 
 /*14*/
 :root {
@@ -137,8 +137,8 @@ p {
 }
 
 /*6109*/
-.carousel-control-prev,
-.carousel-control-next {
+.carousel-control-prev, .carousel-control-prev:focus, .carousel-control-prev:not(:focus),
+.carousel-control-next, .carousel-control-next:focus, .carousel-control-next:not(:focus) {
     width: 10%;
     opacity: 0;
     filter: none;
@@ -371,11 +371,11 @@ a.card {
 
 #rating-border {
     background: black;
-    mask-image: url("assets/img/star.svg");
+    mask-image: url("../public/img/star.svg");
 }
 
 #rating-input {
-    mask-image: url("assets/img/star-inline.svg");
+    mask-image: url("../public/img/star-inline.svg");
     appearance: none;
 }
 

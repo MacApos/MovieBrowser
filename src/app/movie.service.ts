@@ -88,7 +88,7 @@ export class MovieService {
                 .filter((member: Record<string, any>) => member["known_for_department"] === "Acting" && member["order"] < 3)
                 .map((member: Record<string, any>) => [member["name"], member["character"]].filter(Boolean).join(" - "))
                 .join(", "),
-            crew: response["crew"]
+            director: response["crew"]
                 .filter((member: Record<string, any>) => member["job"] === "Director")
                 .map((member: Record<string, any>) => member["name"])
         };

@@ -2,6 +2,7 @@ import {Component, inject, input, OnInit} from '@angular/core';
 import {ButtonComponent} from "../button/button.component";
 import {LANGUAGE_DETAILS, LanguageCode} from "../constants";
 import {RouterService} from "../router.service";
+import {TranslateService} from "@ngx-translate/core";
 
 @Component({
     selector: 'app-language-change',
@@ -16,6 +17,7 @@ import {RouterService} from "../router.service";
 export class LanguageChangeComponent implements OnInit {
     language = input.required<LanguageCode>();
     routerService = inject(RouterService);
+    translateService = inject(TranslateService)
     languageDetails!: Record<string, string>;
 
     ngOnInit(): void {
@@ -26,6 +28,7 @@ export class LanguageChangeComponent implements OnInit {
         const urlSegments = this.routerService.getUrlSegments();
         const queryParams = this.routerService.getQueryParams();
         urlSegments[0].path = this.language();
+        this.translateService.use(this.language())
         this.routerService.navigate(urlSegments.map(s => s.path), {queryParams});
     }
 

@@ -51,14 +51,14 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "src/assets"
+                "input": "public"
               }
             ],
             "styles": [
               "src/styles.css"
             ],
             "scripts": [
-              "src/assets/js/color-modes.js"
+              "public/js/color-modes.js"
             ],
             "server": "src/main.server.ts",
             "prerender": true,

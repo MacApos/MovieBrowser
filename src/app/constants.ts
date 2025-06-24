@@ -2,16 +2,12 @@ type CategoryPath = "now-playing" | "popular" | "top-rated" | "upcoming"
 type SortCriterion = "popularity" | "vote_average" | "primary_release_date";
 type SortDirection = "asc" | "desc"
 type SortParam = `${SortCriterion}.${SortDirection}`
-type Sort = {
-    name: string
-    criterion: SortCriterion
-    direction: SortDirection
-}
+type LanguageCode = "en" | "pl"
 
 type CategoryDetails = {
-    name: string,
-    path: CategoryPath,
     params: string,
+    path: CategoryPath,
+    sort: SortCriterion[]
 }
 
 type QueryParams = {
@@ -25,26 +21,29 @@ enum Theme {
     dark = "dark",
 }
 
-type LanguageCode = "en" | "pl"
-
-const ALL_LANGUAGES: LanguageCode[] = ["en", "pl"];
+const DEFAULT_LANGUAGE: LanguageCode = "en";
 const LANGUAGE_DETAILS: Record<LanguageCode, Record<string, string>> = {
     en: {
-        code: "en-US",
         icon: "usa"
     },
     pl: {
-        code: "pl-PL",
         icon: "poland"
     }
 };
+const ALL_LANGUAGES: LanguageCode[] = Object.keys(LANGUAGE_DETAILS).map(language=>language as LanguageCode);
 
-const DEFAULT_LANGUAGE: LanguageCode = "en";
 const DEFAULT_CATEGORY: CategoryPath = "now-playing";
 const START_PAGE = `${DEFAULT_CATEGORY}/1`;
 const PAGE_NOT_FOUND = "page-not-found";
 const SEARCH_PAGE = "search";
 const MOVIE_DETAILS_PAGE = "movie-details";
+
+function formatDate(date: Date) {
+    const padStart = (num: number) => {
+        return String(num).padStart(2, '0');
+    };
+    return `${date.getFullYear()}-${padStart(date.getMonth() + 1)}-${padStart(date.getDate())}`;
+}
 
 const presentDate = new Date();
 const presentFormattedDate = formatDate(new Date());
@@ -53,22 +52,22 @@ const pastFormattedDate = formatDate(new Date(presentDate.setDate(presentDate.ge
 const MOVIE_CATEGORY: Record<CategoryPath, CategoryDetails> = {
     "now-playing": {
         params: `primary_release_date.gte=${pastFormattedDate}&primary_release_date.lte=${presentFormattedDate}`,
-        name: "Now Playing",
+        sort: ["popularity", "vote_average", "primary_release_date"],
         path: "now-playing"
     },
     "popular": {
         params: "",
-        name: "Popular",
+        sort: ["popularity"],
         path: "popular"
     },
     "top-rated": {
         params: "without_genres=99,10755&vote_count.gte=850&sort_by=vote_average.desc",
-        name: "Top Rated",
+        sort: [],
         path: "top-rated"
     },
     "upcoming": {
         params: `with_release_type=2|3&primary_release_date.gte=${presentFormattedDate}`,
-        name: "Upcoming",
+        sort:["popularity", "vote_average", "primary_release_date"],
         path: "upcoming"
     }
 };
@@ -78,13 +77,6 @@ enum WindowWidth {
     md = 768,
     lg = 992,
     xl = 1200,
-}
-
-function formatDate(date: Date) {
-    const padStart = (num: number) => {
-        return String(num).padStart(2, '0');
-    };
-    return `${date.getFullYear()}-${padStart(date.getMonth() + 1)}-${padStart(date.getDate())}`;
 }
 
 export {
@@ -100,5 +92,5 @@ export {
     Theme,
     WindowWidth
 };
-export type {CategoryPath, SortCriterion, SortDirection, SortParam, Sort, CategoryDetails, QueryParams, LanguageCode};
+export type {CategoryPath, SortCriterion, SortDirection, SortParam, CategoryDetails, QueryParams, LanguageCode};
 

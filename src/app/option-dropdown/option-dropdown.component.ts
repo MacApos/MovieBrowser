@@ -1,9 +1,10 @@
 import {Component, inject, input, OnChanges, OnInit} from '@angular/core';
 import {RouterService} from "../router.service";
-import {CategoryPath, SortCriterion, SortDirection} from "../constants";
+import {CategoryPath, MOVIE_CATEGORY, SortCriterion, SortDirection} from "../constants";
 import {ActivatedRoute} from '@angular/router';
 import {ButtonComponent} from "../button/button.component";
 import {NgOptimizedImage, NgStyle} from "@angular/common";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
     selector: 'app-option-dropdown',
@@ -11,6 +12,7 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
         ButtonComponent,
         NgStyle,
         NgOptimizedImage,
+        TranslatePipe,
     ],
     template: `
         <div class="position-fixed bottom-0 end-0 mx-2 my-3 z-3" id="option">
@@ -31,13 +33,12 @@ import {NgOptimizedImage, NgStyle} from "@angular/common";
                         @if (showCriteria) {
                             <div class="m-0 position-absolute" id="sort-option-container" [ngStyle]="containerStyle">
                                 @for (criterion of sortCriteria; track criterion) {
-                                    @let name = sortObj[criterion]["name"];
                                     @let isActive = criterion === activeCriterion();
                                     <button class="btn px-2 w-100 btn-warning" (click)="onSortingChange(criterion)"
                                             id="sort-criterion">
                                         <div class="d-flex justify-content-between">
                                             <div>
-                                                {{ name }}
+                                                {{ "sortCriterion." + criterion | translate }}
                                             </div>
                                             @if (criterion === activeCriterion()) {
                                                 <span class="d-inline-flex justify-content-center align-items-center 
@@ -73,27 +74,8 @@ export class OptionDropdownComponent implements OnChanges {
     sortCriteria !: SortCriterion[];
     showCriteria!: boolean;
 
-    categorySort: Record<CategoryPath, SortCriterion[]> = {
-        "now-playing": ["popularity", "vote_average", "primary_release_date"],
-        "popular": ["popularity"],
-        "top-rated": [],
-        "upcoming": ["popularity", "vote_average", "primary_release_date"],
-    };
-
-    sortObj: Record<SortCriterion, { name: string }> = {
-        "popularity": {
-            name: "Popularity",
-        },
-        "primary_release_date": {
-            name: "Release date",
-        },
-        "vote_average": {
-            name: "Average vote",
-        },
-    };
-
     ngOnChanges(): void {
-        this.sortCriteria = this.categorySort[this.routerService.getCategorySegment()];
+        this.sortCriteria = MOVIE_CATEGORY[this.routerService.getCategorySegment() as CategoryPath].sort;
         this.showCriteria = this.sortCriteria.length > 0;
         this.spanRotation = this.activeDirection() === "desc" ? -180 : 0;
     }

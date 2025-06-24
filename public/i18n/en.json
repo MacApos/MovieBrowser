@@ -1,0 +1,22 @@
+{
+  "searchBar": {
+    "search": "Search"
+  },
+  "categoryPath": {
+    "now-playing": "Now Playing",
+    "popular": "Popular",
+    "top-rated": "Top Rated",
+    "upcoming": "Upcoming"
+  },
+  "sortCriterion": {
+    "popularity": "Popularity",
+    "vote_average": "Release date",
+    "primary_release_date": "Average vote"
+  },
+  "movie": {
+    "genres": "Genres",
+    "cast": "Cast",
+    "director": "Director",
+    "runtime": "Runtime"
+  }
+}

@@ -6,6 +6,7 @@ import {SearchBarComponent} from "../search-bar/search-bar.component";
 import {CategoryDetails, MOVIE_CATEGORY} from "../constants";
 import {RouterService} from "../router.service";
 import {Router} from "@angular/router";
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
     selector: 'app-nav-bar',
@@ -13,7 +14,8 @@ import {Router} from "@angular/router";
         ModeToggleComponent,
         LanguageChangeComponent,
         CommonModule,
-        SearchBarComponent
+        SearchBarComponent,
+        TranslatePipe
     ],
     template: `
         <div class="position-relative d-flex justify-content-start" id="navbar">
@@ -35,9 +37,8 @@ import {Router} from "@angular/router";
             <ng-template #button let-category="category">
                 <button class="w-100 btn btn-info rounded-5"
                         (click)="onCategoryChange(category)">
-                    {{ category.name }}
+                    {{ "categoryPath." + category.path | translate }}
                 </button>
-
             </ng-template>
 
             <div class="position-absolute z-1 top-0 h-100" id="category-dropdown">
