@@ -1,10 +1,11 @@
-import {Component, inject, input, OnChanges, OnInit} from '@angular/core';
+import {Component, effect, inject, input, OnChanges} from '@angular/core';
 import {RouterService} from "../router.service";
-import {CategoryPath, MOVIE_CATEGORY, SortCriterion, SortDirection} from "../constants";
+import {CategoryPath, Display, MOVIE_CATEGORY, SortCriterion, SortDirection} from "../constants";
 import {ActivatedRoute} from '@angular/router';
 import {ButtonComponent} from "../button/button.component";
 import {NgOptimizedImage, NgStyle} from "@angular/common";
 import {TranslatePipe} from "@ngx-translate/core";
+import {StorageService} from "../storage.service";
 
 @Component({
     selector: 'app-option-dropdown',
@@ -24,11 +25,14 @@ import {TranslatePipe} from "@ngx-translate/core";
                                       id="option-arrow"/>
                 <div class="position-absolute d-flex justify-content-start align-items-center gap-2 z-n1"
                      [ngStyle]="{'overflow': overflow ? 'visible' : 'hidden'}" id="option-dropdown">
-                    <app-button-component icon="list" [attributes]="{ class:'btn-success'}" id="display"/>
+                    <app-button-component [icon]="storageService.signalStorage().display"
+                                          [attributes]="{ class:'btn-success'}" id="display"
+                                          (click)="onClick()"/>
                     <div class="position-relative d-flex justify-content-center align-items-end gap-2" id="sort-option"
                          (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
-                        <app-button-component icon="funnel-fill"
-                                              [attributes]="{class:'btn-success', 
+                        <app-button-component icon="funnel"
+                                              [attributes]="{
+                                              class:'btn-success',
                                               disabled:showCriteria ? '' : 'disabled'}"/>
                         @if (showCriteria) {
                             <div class="m-0 position-absolute" id="sort-option-container" [ngStyle]="containerStyle">
@@ -62,7 +66,15 @@ import {TranslatePipe} from "@ngx-translate/core";
 export class OptionDropdownComponent implements OnChanges {
     activeCriterion = input.required<string>();
     activeDirection = input.required<SortDirection>();
+    storageService = inject(StorageService);
 
+    constructor() {
+        effect(() => {
+            this.display = this.storageService.getSignal("display");
+        });
+    }
+
+    display!: string;
     overflow = false;
     spanRotation = 0;
     spanDimension = 36;
@@ -91,13 +103,13 @@ export class OptionDropdownComponent implements OnChanges {
     }
 
     onMouseEnter() {
-        this.overflow = this.showCriteria
+        this.overflow = this.showCriteria;
         const length = this.sortCriteria.length;
         this.containerHeight = length * 64 + Math.abs(length - 1) * 12;
     }
 
     onMouseLeave() {
-        this.containerHeight = 64
+        this.containerHeight = 64;
     }
 
     get containerStyle() {
@@ -112,5 +124,9 @@ export class OptionDropdownComponent implements OnChanges {
             height: `${this.spanDimension}px`,
             transform: `rotate(${this.spanRotation}deg)`
         };
+    }
+
+    onClick() {
+        this.storageService.setSignal("display", this.display === Display.list ? Display.grid : Display.list);
     }
 }

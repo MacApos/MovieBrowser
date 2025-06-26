@@ -3,7 +3,6 @@ type SortCriterion = "popularity" | "vote_average" | "primary_release_date";
 type SortDirection = "asc" | "desc"
 type SortParam = `${SortCriterion}.${SortDirection}`
 type LanguageCode = "en" | "pl"
-
 type CategoryDetails = {
     params: string,
     path: CategoryPath,
@@ -21,6 +20,11 @@ enum Theme {
     dark = "dark",
 }
 
+enum Display {
+    grid = "grid",
+    list = "list"
+}
+
 const DEFAULT_LANGUAGE: LanguageCode = "en";
 const LANGUAGE_DETAILS: Record<LanguageCode, Record<string, string>> = {
     en: {
@@ -30,7 +34,7 @@ const LANGUAGE_DETAILS: Record<LanguageCode, Record<string, string>> = {
         icon: "poland"
     }
 };
-const ALL_LANGUAGES: LanguageCode[] = Object.keys(LANGUAGE_DETAILS).map(language=>language as LanguageCode);
+const ALL_LANGUAGES: string[] = Object.keys(LANGUAGE_DETAILS);
 
 const DEFAULT_CATEGORY: CategoryPath = "now-playing";
 const START_PAGE = `${DEFAULT_CATEGORY}/1`;
@@ -67,7 +71,7 @@ const MOVIE_CATEGORY: Record<CategoryPath, CategoryDetails> = {
     },
     "upcoming": {
         params: `with_release_type=2|3&primary_release_date.gte=${presentFormattedDate}`,
-        sort:["popularity", "vote_average", "primary_release_date"],
+        sort: ["popularity", "vote_average", "primary_release_date"],
         path: "upcoming"
     }
 };
@@ -90,7 +94,16 @@ export {
     LANGUAGE_DETAILS,
     ALL_LANGUAGES,
     Theme,
+    Display,
     WindowWidth
 };
-export type {CategoryPath, SortCriterion, SortDirection, SortParam, CategoryDetails, QueryParams, LanguageCode};
+export type {
+    CategoryPath,
+    SortCriterion,
+    SortDirection,
+    SortParam,
+    CategoryDetails,
+    QueryParams,
+    LanguageCode
+};
 

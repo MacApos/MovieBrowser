@@ -338,22 +338,22 @@ a.card {
 }
 
 #movie-grid {
-    .row:first-child {
-        flex-direction: column;
-    }
+    /*.row:first-child {*/
+    /*    flex-direction: column;*/
+    /*}*/
 
-    .card-body {
-        height: 100%;
-        gap: 1.5rem !important;
+    /*.card-body {*/
+    /*    height: 100%;*/
+    /*    gap: 1.5rem !important;*/
 
-        #rating {
-            align-self: end;
-        }
+    /*    #rating {*/
+    /*        align-self: end;*/
+    /*    }*/
 
-        & > *:not(#movie-title):not(.card-footer):not(#rating) {
-            display: none !important;
-        }
-    }
+        /*& > *:not(#movie-title):not(.card-footer):not(#rating) {*/
+        /*    display: none !important;*/
+        /*}*/
+    /*}*/
 }
 
 #movie-grid,

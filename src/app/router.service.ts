@@ -32,8 +32,9 @@ export class RouterService {
     }
 
     getLanguageSegment() {
-        const language = this.getUrlSegments()[0].path as LanguageCode;
-        return language && ALL_LANGUAGES.includes(language) ? language : this.translateService.getDefaultLang();
+        const language = this.getUrlSegments()[0].path;
+        return (language && ALL_LANGUAGES.includes(language) ? language : this.translateService.getDefaultLang()) as
+            LanguageCode;
     }
 
     getCategorySegment() {
@@ -50,11 +51,7 @@ export class RouterService {
         this.router.events
             .pipe(filter(event => event instanceof NavigationEnd))
             .subscribe(() => {
-                if (window) {
                     window.scrollTo({top: 0, behavior: "smooth"});
-                }
             });
     }
-
-
 }

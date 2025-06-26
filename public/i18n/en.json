@@ -17,6 +17,7 @@
     "genres": "Genres",
     "cast": "Cast",
     "director": "Director",
-    "runtime": "Runtime"
+    "runtime": "Runtime",
+    "noVotes": "No votes yet"
   }
 }

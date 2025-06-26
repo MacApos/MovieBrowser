@@ -1,46 +1,49 @@
-import {Component, inject, input, OnChanges} from '@angular/core';
-import {ListComponent} from "../list/list.component";
+import {Component, effect, inject, input, OnChanges} from "@angular/core";
 import {PaginationComponent} from "../pagination/pagination.component";
 import {OptionDropdownComponent} from "../option-dropdown/option-dropdown.component";
-import {RouterService} from "../router.service";
+import {ListComponent} from "../list/list.component";
+import {Display, LanguageCode, SortCriterion, SortDirection, SortParam} from "../constants";
 import {MovieService} from "../movie.service";
-import {LanguageCode, SortCriterion, SortDirection, SortParam} from "../constants";
-import {ActivatedRoute} from "@angular/router";
+import {RouterService} from "../router.service";
+import {StorageService} from "../storage.service";
+
 
 @Component({
     selector: 'app-movie-list',
     imports: [PaginationComponent, OptionDropdownComponent, ListComponent],
     template: `
-
-        @if (results && results.length > 0) {
-            <app-list [display]="display" [movies]="results" [language]="language()"/>
+        @if (results && results.length) {
+            <app-list [movies]="results" [language]="language()" [display]="display"/>
             @if (totalPages && totalPages > 1) {
-                <app-pagination [maxPage]="totalPages" [activePage]="page()" [pageNavigation]="pageNavigation"/>
+                <app-pagination [maxPage]="totalPages" [activePage]="page()"/>
             }
             <app-option-dropdown [activeCriterion]="sort_criterion()" [activeDirection]="sort_direction()"/>
         }
     `,
 })
 export class MovieListComponent implements OnChanges {
-    movieService = inject(MovieService);
-    routerService = inject(RouterService);
-    activatedRoute = inject(ActivatedRoute);
-
-    results!: any[];
-    totalPages!: number;
-    display = "movie-grid";
-
     language = input.required<LanguageCode>();
     page = input.required({transform: (value: string) => Number(value)});
-    sort_criterion = input.required({transform: (value: string) => value as SortCriterion ?? "popularity"});
-    sort_direction = input.required({transform: (value: string) => value as SortDirection ?? "desc"});
+    sort_criterion = input.required({
+        transform: (value: string) => value as SortCriterion ?? "popularity"
+    });
+    sort_direction = input.required({
+        transform: (value: string) => value as SortDirection ?? "desc"
+    });
 
-    pageNavigation = (page: number) => {
-        return this.routerService.navigate(["..", page], {
-            relativeTo: this.activatedRoute,
-            queryParams: this.routerService.getQueryParams(),
+    movieService = inject(MovieService);
+    routerService = inject(RouterService);
+    storageService = inject(StorageService);
+
+    display!:Display
+    results!: any[];
+    totalPages!: number;
+
+    constructor() {
+        effect(() => {
+            this.display = this.storageService.getSignal("display") as Display;
         });
-    };
+    }
 
     ngOnChanges(): void {
         const language = this.language();

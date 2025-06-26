@@ -17,6 +17,7 @@
     "genres": "Gatunek",
     "cast": "Obsada",
     "director": "Reżyser",
-    "runtime": "Czas trwania"
+    "runtime": "Czas trwania",
+    "noVotes": "Brak ocen"
   }
 }

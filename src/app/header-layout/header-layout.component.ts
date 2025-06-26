@@ -27,6 +27,8 @@ export class HeaderLayoutComponent{
     translateService = inject(TranslateService);
 
     constructor() {
-        this.translateService.setDefaultLang(this.routerService.getLanguageSegment());
+        const language = this.routerService.getLanguageSegment();
+        this.translateService.setDefaultLang(language);
+        this.translateService.use(language);
     }
 }

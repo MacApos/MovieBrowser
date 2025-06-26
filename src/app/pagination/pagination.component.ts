@@ -1,7 +1,9 @@
-import {Component, DoCheck, HostListener, inject, input, InputSignal} from '@angular/core';
+import {Component, DoCheck, HostListener, inject, input} from '@angular/core';
 import {NgClass, NgTemplateOutlet} from "@angular/common";
 import {WINDOW} from "../window.token";
 import {WindowWidth} from "../constants";
+import {RouterService} from "../router.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
     selector: 'app-pagination',
@@ -71,9 +73,11 @@ export class PaginationComponent implements DoCheck {
     maxPage = input.required<number, number>(
         {transform: (value) => Math.min(value, 30)});
     activePage = input.required<number>();
-    pageNavigation = input.required<(page: number) => void>();
     range!: number;
     pagination!: number[];
+    routerService = inject(RouterService);
+    activatedRoute = inject(ActivatedRoute);
+
 
     @HostListener('window:resize', ['$event'])
     onWindowResize() {
@@ -86,7 +90,10 @@ export class PaginationComponent implements DoCheck {
     }
 
     onClick = (page: number) => {
-        this.pageNavigation()(page);
+        return this.routerService.navigate(["..", page], {
+            relativeTo: this.activatedRoute,
+            queryParams: this.routerService.getQueryParams(),
+        });
     };
 
     onPrev = () => this.onClick(Math.max(1, this.activePage() - 1));

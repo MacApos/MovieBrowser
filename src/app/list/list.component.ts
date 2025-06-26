@@ -1,8 +1,5 @@
 import {Component, inject, input, OnChanges,} from '@angular/core';
-
-import {NavigationEnd, Router, RouterLink} from "@angular/router";
-import {filter} from "rxjs";
-import {LanguageCode} from "../constants";
+import {Display, LanguageCode} from "../constants";
 import {MovieCardComponent} from "../movie-card/movie-card.component";
 import {RouterService} from "../router.service";
 
@@ -12,15 +9,15 @@ import {RouterService} from "../router.service";
         MovieCardComponent
     ],
     template: `
-        <div class="d-grid gap-3" [id]="display()">
+        <div class="d-grid gap-3" [id]="'movie-'+display()">
             @for (movie of movies(); track movie["id"]) {
-                <app-movie-card [language]="language()" [movie]="movie"/>
+                <app-movie-card [movie]="movie"/>
             }
         </div>
     `,
 })
 export class ListComponent implements OnChanges {
-    display = input("movie-list");
+    display = input<Display>(Display.grid);
     movies = input.required<Record<string, any>[]>();
     language = input.required<LanguageCode>();
     routerService = inject(RouterService);

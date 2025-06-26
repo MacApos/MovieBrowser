@@ -5,7 +5,7 @@ import {catchError, forkJoin, filter, map, tap, EMPTY} from "rxjs";
 import {CategoryPath, LanguageCode, MOVIE_CATEGORY, PAGE_NOT_FOUND, QueryParams} from "./constants";
 import {RouterService} from "./router.service";
 
-type MapResponseFn = (response: Record<string, any>) => any ;
+type MapResponseFn = (response: Record<string, any>) => any;
 
 @Injectable({
     providedIn: 'root'
@@ -74,10 +74,12 @@ export class MovieService {
 
     mapMovieDetails: MapResponseFn = (response) => {
         const runtime = response["runtime"];
+        const hours = Math.floor(runtime / 60);
+        const minutes = Math.floor(runtime % 60);
         const result: Record<string, any> = {
             genres: response["genres"].map((genre: Record<string, any>) => genre["name"]).join(", "),
             production_countries: response["production_countries"].map((country: Record<string, any>) => country["name"]),
-            runtime: `${Math.floor(runtime / 60)}h ${runtime % 60}m`
+            runtime: [hours ? `${hours}h` : '', minutes ? `${minutes}m` : ''].filter(Boolean).join(' ')
         };
         return {...response, ...result};
     };

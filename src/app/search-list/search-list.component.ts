@@ -12,7 +12,7 @@ import {LanguageCode} from "../constants";
         @if (query().length < 3) {
             <div>search something</div>
         } @else if (results) {
-            @if (results.length > 0) {
+            @if (results.length) {
                 <app-list [language]="language()" [movies]="results"/>
             } @else {
                 <div>nothing found</div>

@@ -1,10 +1,17 @@
-import {inject, Injectable, PLATFORM_ID} from '@angular/core';
+import {computed, effect, inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
 import {isPlatformBrowser} from "@angular/common";
-import {Theme} from "./constants";
+import {Display, Theme} from "./constants";
 
 interface StorageI {
-    [key: string]: string | number;
+    [key: string]: string;
+
     theme: Theme,
+}
+
+interface SignalStorageI {
+    [key: string]: string;
+
+    display: Display,
 }
 
 @Injectable({
@@ -16,6 +23,21 @@ export class StorageService {
     initStorage: StorageI = {
         theme: Theme.dark,
     };
+    signalStorage = signal<SignalStorageI>({
+        display: Display.grid
+    });
+    computedSignal!: SignalStorageI;
+
+    constructor() {
+        effect(() => {
+            this.computedSignal = this.signalStorage();
+        });
+    }
+
+
+    // get compSignal(){
+    //     return this.computedSignal
+    // }
 
     storageGuard: Record<string, (param: string) => boolean> = {
         theme: param => Object.values(Theme).includes(param as Theme),
@@ -30,6 +52,19 @@ export class StorageService {
                 }
             });
         }
+    }
+
+    getSignal(keyName: string) {
+        return this.signalStorage()[keyName];
+    }
+
+    setSignal(keyName: string, keyValue: Display) {
+        if (!Object.keys(this.signalStorage()).includes(keyName)) {
+            return;
+        }
+        this.signalStorage.update(value => {
+            return {...value, [keyName]: keyValue};
+        });
     }
 
     getItem(keyName: string) {
