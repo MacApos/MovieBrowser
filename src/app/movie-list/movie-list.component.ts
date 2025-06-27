@@ -13,7 +13,7 @@ import {StorageService} from "../storage.service";
     imports: [PaginationComponent, OptionDropdownComponent, ListComponent],
     template: `
         @if (results && results.length) {
-            <app-list [movies]="results" [language]="language()" [display]="display"/>
+            <app-list [movies]="results" [display]="display"/>
             @if (totalPages && totalPages > 1) {
                 <app-pagination [maxPage]="totalPages" [activePage]="page()"/>
             }

@@ -1,14 +1,12 @@
 import {Component, inject, input, OnChanges} from '@angular/core';
 import {MovieService} from "../movie.service";
 import {LanguageCode} from "../constants";
-import {MovieCardComponent} from "../movie-card/movie-card.component";
 import {MovieListCardComponent} from "../movie-list-card/movie-list-card.component";
 import {RouterService} from "../router.service";
 
 @Component({
     selector: 'app-movie',
     imports: [
-        MovieCardComponent,
         MovieListCardComponent,
     ],
     template: `

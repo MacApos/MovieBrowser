@@ -1,7 +1,7 @@
 import {Component, effect, inject, input, Input, OnChanges, signal} from '@angular/core';
 import {MovieService} from "../movie.service";
 import {ListComponent} from "../list/list.component";
-import {LanguageCode} from "../constants";
+import {Display, LanguageCode} from "../constants";
 
 @Component({
     selector: 'app-search-list',
@@ -13,7 +13,7 @@ import {LanguageCode} from "../constants";
             <div>search something</div>
         } @else if (results) {
             @if (results.length) {
-                <app-list [language]="language()" [movies]="results"/>
+                <app-list [movies]="results" [display]="Display.list"/>
             } @else {
                 <div>nothing found</div>
             }
@@ -39,4 +39,6 @@ export class SearchListComponent implements OnChanges {
             });
         }
     }
+
+    protected readonly Display = Display;
 }

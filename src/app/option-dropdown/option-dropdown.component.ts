@@ -1,9 +1,9 @@
-import {Component, effect, inject, input, OnChanges} from '@angular/core';
+import {Component, effect, inject, input, OnChanges, signal, untracked} from '@angular/core';
 import {RouterService} from "../router.service";
 import {CategoryPath, Display, MOVIE_CATEGORY, SortCriterion, SortDirection} from "../constants";
 import {ActivatedRoute} from '@angular/router';
 import {ButtonComponent} from "../button/button.component";
-import {NgOptimizedImage, NgStyle} from "@angular/common";
+import {NgStyle} from "@angular/common";
 import {TranslatePipe} from "@ngx-translate/core";
 import {StorageService} from "../storage.service";
 
@@ -12,34 +12,39 @@ import {StorageService} from "../storage.service";
     imports: [
         ButtonComponent,
         NgStyle,
-        NgOptimizedImage,
         TranslatePipe,
     ],
     template: `
         <div class="position-fixed bottom-0 end-0 mx-2 my-3 z-3" id="option">
             <div class="position-relative d-flex justify-content-center align-items-center"
                  id="option-container"
-                 (mouseleave)="overflow=false">
-                <app-button-component icon="arrow-up"
+                 (mouseenter)="onOptionContainerMouseEnter()"
+                 (mouseleave)="onOptionContainerMouseLeave()">
+                <app-button-component [icon]="'arrow-up'"
                                       [attributes]="{disabled:'disabled', class:'btn-info opacity-100'}"
                                       id="option-arrow"/>
                 <div class="position-absolute d-flex justify-content-start align-items-center gap-2 z-n1"
-                     [ngStyle]="{'overflow': overflow ? 'visible' : 'hidden'}" id="option-dropdown">
+                     [ngStyle]="dropdownStyle" id="option-dropdown">
                     <app-button-component [icon]="storageService.signalStorage().display"
-                                          [attributes]="{ class:'btn-success'}" id="display"
-                                          (click)="onClick()"/>
-                    <div class="position-relative d-flex justify-content-center align-items-end gap-2" id="sort-option"
-                         (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
-                        <app-button-component icon="funnel"
+                                          [attributes]="{class:'btn-success'}" id="display"
+                                          (click)="onDisplayClick()"/>
+                    <div class="position-relative d-flex justify-content-center align-items-end gap-2"
+                         id="sort-option"
+                         (mouseenter)="onSortOptionMouseEnter()"
+                         (mouseleave)="onSortOptionMouseLeave()">
+                        <app-button-component [icon]="'funnel'"
                                               [attributes]="{
                                               class:'btn-success',
                                               disabled:showCriteria ? '' : 'disabled'}"/>
                         @if (showCriteria) {
-                            <div class="m-0 position-absolute" id="sort-option-container" [ngStyle]="containerStyle">
+                            <div class="position-absolute end-100 bottom-0 d-flex flex-column justify-content-between
+                             m-0 overflow-hidden" id="sort-option-container" [ngStyle]="containerStyle"
+                                 (transitioncancel)="onTransitionCancel()"
+                                 (transitionend)="onTransitionEnded($event)">
                                 @for (criterion of sortCriteria; track criterion) {
-                                    @let isActive = criterion === activeCriterion();
-                                    <button class="btn px-2 w-100 btn-warning" (click)="onSortingChange(criterion)"
-                                            id="sort-criterion">
+                                    <button class="btn px-2 w-100 btn-warning" id="sort-criterion"
+                                            (click)="onSortingChange(criterion)"
+                                    >
                                         <div class="d-flex justify-content-between">
                                             <div>
                                                 {{ "sortCriterion." + criterion | translate }}
@@ -48,8 +53,7 @@ import {StorageService} from "../storage.service";
                                                 <span class="d-inline-flex justify-content-center align-items-center 
                                                 rounded-circle border border-2 border-black bg-white"
                                                       [ngStyle]="spanStyle">
-                                                    <img ngSrc="/img/arrow-up.svg" alt="sort"
-                                                         [width]="reducedDimension" [height]="reducedDimension"/>
+                                                    <img src="/img/arrow-up.svg" alt="sort" class="w-75"/>
                                                 </span>
                                             }
                                         </div>
@@ -66,30 +70,109 @@ import {StorageService} from "../storage.service";
 export class OptionDropdownComponent implements OnChanges {
     activeCriterion = input.required<string>();
     activeDirection = input.required<SortDirection>();
+
+    routerService = inject(RouterService);
+    activatedRoute = inject(ActivatedRoute);
     storageService = inject(StorageService);
+
+    display!: string;
+    sortCriteria!: SortCriterion[];
+    showCriteria!: boolean;
+    spanRotation = 0;
+    containerHeight = 64;
+    dropdownHeight = 0;
+    baseHeight = 68;
+    padding = 16;
+    overflow = false;
+    containerLeft = true;
+    sortOptionLeft = true;
+    sortOptionContainerLeft = true;
 
     constructor() {
         effect(() => {
             this.display = this.storageService.getSignal("display");
+            if (this.firstTransitionEnded()) {
+                console.log("first transition ended");
+            }
         });
     }
-
-    display!: string;
-    overflow = false;
-    spanRotation = 0;
-    spanDimension = 36;
-    reducedDimension = Math.ceil(36 * 0.75);
-    containerHeight = 64;
-
-    routerService = inject(RouterService);
-    activatedRoute = inject(ActivatedRoute);
-    sortCriteria !: SortCriterion[];
-    showCriteria!: boolean;
 
     ngOnChanges(): void {
         this.sortCriteria = MOVIE_CATEGORY[this.routerService.getCategorySegment() as CategoryPath].sort;
         this.showCriteria = this.sortCriteria.length > 0;
         this.spanRotation = this.activeDirection() === "desc" ? -180 : 0;
+    }
+
+    get containerStyle() {
+        // return this._containerStyle;
+        return {
+            height: `${this.containerHeight}px`
+        };
+    }
+
+    get dropdownStyle() {
+        return {
+            overflow: this.overflow ? 'visible' : 'hidden',
+            height: `${this.dropdownHeight}px`
+        };
+    }
+
+    get spanStyle() {
+        return {
+            width: '36px',
+            height: '36px',
+            transform: `rotate(${this.spanRotation}deg)`
+        };
+    }
+
+    onDisplayClick() {
+        this.storageService.setSignal("display", this.display === Display.list ? Display.grid : Display.list);
+    }
+
+    onOptionContainerMouseEnter() {
+        this.dropdownHeight = this.baseHeight * 2.5 + this.padding * 2.5;
+        this.containerLeft = false;
+        this.overflow = false;
+    }
+
+    onOptionContainerMouseLeave() {
+        console.log("option container left", this.sortOptionContainerLeft);
+        if (this.sortOptionContainerLeft) {
+            this.dropdownHeight = 0;
+        }
+        this.containerLeft = true;
+    }
+
+    onSortOptionMouseEnter() {
+        this.overflow = true;
+        this.sortOptionContainerLeft = false;
+        const length = this.sortCriteria.length;
+        this.containerHeight = length * 64 + Math.max(0, length - 1) * 12;
+    }
+
+    onSortOptionMouseLeave() {
+        this.containerHeight = 64;
+        this.sortOptionContainerLeft = true;
+    }
+
+    firstTransitionEnded = signal(false);
+
+    onTransitionCancel() {
+        this.firstTransitionEnded.set(true);
+    }
+
+    onTransitionEnded($event: TransitionEvent) {
+        if (!this.firstTransitionEnded() && $event.propertyName == "height") {
+            this.firstTransitionEnded.set(true);
+        }
+
+        if (this.firstTransitionEnded() && $event.propertyName === "width") {
+            this.firstTransitionEnded.set(false);
+            this.overflow = false;
+            if (this.containerLeft) {
+                this.dropdownHeight = 0;
+            }
+        }
     }
 
     onSortingChange(criterion: string) {
@@ -98,35 +181,12 @@ export class OptionDropdownComponent implements OnChanges {
                 sort_criterion: criterion,
                 sort_direction: criterion == this.activeCriterion() && this.activeDirection() === "desc" ?
                     "asc" : "desc"
-            }, relativeTo: this.activatedRoute
+            },
+            relativeTo: this.activatedRoute
         });
     }
 
-    onMouseEnter() {
-        this.overflow = this.showCriteria;
-        const length = this.sortCriteria.length;
-        this.containerHeight = length * 64 + Math.abs(length - 1) * 12;
-    }
-
-    onMouseLeave() {
-        this.containerHeight = 64;
-    }
-
-    get containerStyle() {
-        return {
-            height: `${this.containerHeight}px`,
-        };
-    }
-
-    get spanStyle() {
-        return {
-            width: `${this.spanDimension}px`,
-            height: `${this.spanDimension}px`,
-            transform: `rotate(${this.spanRotation}deg)`
-        };
-    }
-
-    onClick() {
-        this.storageService.setSignal("display", this.display === Display.list ? Display.grid : Display.list);
+    stopPropagation($event: TransitionEvent) {
+        $event.stopPropagation();
     }
 }
