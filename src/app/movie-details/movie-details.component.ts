@@ -3,17 +3,19 @@ import {MovieService} from "../movie.service";
 import {LanguageCode} from "../constants";
 import {MovieListCardComponent} from "../movie-list-card/movie-list-card.component";
 import {RouterService} from "../router.service";
+import {SpinnerComponent} from "../spinner/spinner.component";
 
 @Component({
     selector: 'app-movie',
     imports: [
         MovieListCardComponent,
+        SpinnerComponent,
     ],
     template: `
         @if (movie && recommendation) {
             <app-movie-list-card [movie]="movie" [recommendation]="recommendation" id="movie-list"/>
         } @else {
-            <div>spinner</div>
+            <app-spinner/>
         }
     `,
 })

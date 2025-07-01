@@ -7,6 +7,8 @@
     --bs-btn-font-size-root: 1.5rem;
     --bs-btn-padding-y-root: 0.75rem;
     --bs-btn-line-height-root: 1.5;
+    --bs-body-color: var(--bs-theme);
+    --bs-card-theme-color: var(--bs-theme);
     --btn-box-shadow-offset-x: 3px;
     --btn-box-shadow-offset-y: 3px;
     --btn-box-shadow-spread-radius: 1px;
@@ -24,11 +26,17 @@
 [data-bs-theme=light], [data-bs-theme=dark] {
     --bs-dark-border-subtle-fixed: #343a40;
 }
-
 [data-bs-theme=light] {
+    --bs-theme:#000;
+    --bs-theme-rgb: 233, 233, 232;
+    --body-background-color: linear-gradient(90deg, #56c7c9, #5e62b0, #c25184);
+
 }
 
 [data-bs-theme=dark] {
+    --bs-theme:#fff;
+    --bs-theme-rgb: 33, 37, 41;
+    --body-background-color: linear-gradient(90deg, #33b7e2, #323796, #dc307c);
 }
 
 /*224*/
@@ -102,10 +110,13 @@ p {
     border-color: #000;
 }
 
-/* 4447 */
+.card {
+    --bs-card-color: var(--bs-card-theme-color);
+}
+
+/*4447 */
 .card-title {
     margin-bottom: 0;
-    color: var(--bs-card-title-color);
 }
 
 /*4742*/
@@ -156,6 +167,12 @@ p {
 
 .carousel-control-next-icon {
     transform: rotateZ(180deg);
+}
+
+/*6887*/
+.text-bg-theme {
+    color: var(--bs-theme) !important;
+    background-color: RGBA(var(--bs-theme-rgb), var(--bs-bg-opacity, 1)) !important;
 }
 
 /*7638*/
@@ -215,6 +232,11 @@ p {
 .rounded-start-inherit {
     border-top-left-radius: inherit;
     border-bottom-left-radius: inherit;
+}
+
+/*12069*/
+body {
+    background-image: var(--body-background-color);
 }
 
 /*12345*/

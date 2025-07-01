@@ -2,11 +2,13 @@ import {Component, effect, inject, input, Input, OnChanges, signal} from '@angul
 import {MovieService} from "../movie.service";
 import {ListComponent} from "../list/list.component";
 import {Display, LanguageCode} from "../constants";
+import {SpinnerComponent} from "../spinner/spinner.component";
 
 @Component({
     selector: 'app-search-list',
     imports: [
         ListComponent,
+        SpinnerComponent,
     ],
     template: `
         @if (query().length < 3) {
@@ -18,7 +20,7 @@ import {Display, LanguageCode} from "../constants";
                 <div>nothing found</div>
             }
         } @else {
-            <div>spinner</div>
+            <app-spinner/>
         }
     `,
     styles: ``

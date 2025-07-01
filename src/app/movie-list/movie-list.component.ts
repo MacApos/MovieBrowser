@@ -6,11 +6,12 @@ import {CategoryPath, Display, LanguageCode, SortCriterion, SortDirection, SortP
 import {MovieService} from "../movie.service";
 import {RouterService} from "../router.service";
 import {StorageService} from "../storage.service";
+import {SpinnerComponent} from "../spinner/spinner.component";
 
 
 @Component({
     selector: 'app-movie-list',
-    imports: [PaginationComponent, OptionDropdownComponent, ListComponent],
+    imports: [PaginationComponent, OptionDropdownComponent, ListComponent, SpinnerComponent],
     template: `
         @if (results && results.length) {
             <app-list [movies]="results" [display]="display"/>
@@ -18,6 +19,8 @@ import {StorageService} from "../storage.service";
                 <app-pagination [maxPage]="totalPages" [activePage]="page()"/>
             }
             <app-option-dropdown [activeCriterion]="sort_criterion()" [activeDirection]="sort_direction()"/>
+        } @else {
+            <app-spinner/>
         }
     `,
 })

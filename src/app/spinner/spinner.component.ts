@@ -4,9 +4,11 @@ import { Component } from '@angular/core';
   selector: 'app-spinner',
   imports: [],
   template: `
-    <div class="spinner-border text-info">
-      <span class="visually-hidden">Loading...</span>
-    </div>
+      <div class="d-flex justify-content-center">
+          <div class="spinner-border text-bg-theme" style="width: 4rem; height: 4rem;">
+              <span class="visually-hidden">Loading...</span>
+          </div>
+      </div>
   `,
   styles: ``
 })
