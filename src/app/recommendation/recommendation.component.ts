@@ -27,8 +27,7 @@ import {MovieGridCardComponent} from "../movie-grid-card/movie-grid-card.compone
                     <div class="carousel-inner h-100" [ngStyle]="{overflow:overflow ? 'visible' : 'hidden'}"
                          (transitionstart)="transitionEnded=false" (transitionend)="transitionEnded=true">
                         @for (recommendation of recommendationArray(); track $index) {
-                            <div class="carousel-item h-100" [ngClass]="{active:$first}"
-                            >
+                            <div class="carousel-item h-100" [ngClass]="{active:$first}">
                                 <div class="d-grid gap-3 position-relative h-100 p-1" [ngStyle]="carouselGrid">
                                     @for (movie of recommendation; track movie["id"]) {
                                         <app-movie-grid-card [movie]="movie"

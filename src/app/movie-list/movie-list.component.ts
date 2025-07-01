@@ -2,7 +2,7 @@ import {Component, effect, inject, input, OnChanges} from "@angular/core";
 import {PaginationComponent} from "../pagination/pagination.component";
 import {OptionDropdownComponent} from "../option-dropdown/option-dropdown.component";
 import {ListComponent} from "../list/list.component";
-import {Display, LanguageCode, SortCriterion, SortDirection, SortParam} from "../constants";
+import {CategoryPath, Display, LanguageCode, SortCriterion, SortDirection, SortParam} from "../constants";
 import {MovieService} from "../movie.service";
 import {RouterService} from "../router.service";
 import {StorageService} from "../storage.service";
@@ -35,7 +35,7 @@ export class MovieListComponent implements OnChanges {
     routerService = inject(RouterService);
     storageService = inject(StorageService);
 
-    display!:Display
+    display!: Display;
     results!: any[];
     totalPages!: number;
 
@@ -49,11 +49,11 @@ export class MovieListComponent implements OnChanges {
         const language = this.language();
         const page = this.page();
         const sort_by = `${this.sort_criterion()}.${this.sort_direction()}` as SortParam;
-        const category = this.routerService.getCategorySegment();
+        const category = this.routerService.getCategorySegment() as CategoryPath;
         this.movieService.getMovies(category, {language, page, sort_by}).subscribe(response => {
             const {results, totalPages} = response;
             this.results = results;
-            this.totalPages = totalPages;
+            this.totalPages = category === "upcoming" ? 6 : totalPages;
         });
     }
 

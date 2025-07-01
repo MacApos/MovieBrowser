@@ -10,10 +10,11 @@
   },
   "sortCriterion": {
     "popularity": "Popularity",
-    "vote_average": "Release date",
-    "primary_release_date": "Average vote"
+    "vote_average": "Average vote",
+    "primary_release_date": "Release date"
   },
   "movie": {
+    "production_countries": "Production countries",
     "genres": "Genres",
     "cast": "Cast",
     "director": "Director",

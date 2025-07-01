@@ -10,10 +10,11 @@
   },
   "sortCriterion": {
     "popularity": "Popularność",
-    "vote_average": "Data premiery",
-    "primary_release_date": "Średnia ocena"
+    "vote_average": "Średnia ocena",
+    "primary_release_date": "Data premiery"
   },
   "movie": {
+    "production_countries": "Kraj produkcji",
     "genres": "Gatunek",
     "cast": "Obsada",
     "director": "Reżyser",

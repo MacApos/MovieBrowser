@@ -55,13 +55,13 @@ const pastFormattedDate = formatDate(new Date(presentDate.setDate(presentDate.ge
 
 const MOVIE_CATEGORY: Record<CategoryPath, CategoryDetails> = {
     "now-playing": {
-        params: `primary_release_date.gte=${pastFormattedDate}&primary_release_date.lte=${presentFormattedDate}`,
+        params: `vote_count.gte=50&primary_release_date.gte=${pastFormattedDate}&primary_release_date.lte=${presentFormattedDate}`,
         sort: ["popularity", "vote_average", "primary_release_date"],
         path: "now-playing"
     },
     "popular": {
-        params: "",
-        sort: ["popularity"],
+        params: "vote_count.gte=5000",
+        sort: ["popularity", "vote_average", "primary_release_date"],
         path: "popular"
     },
     "top-rated": {

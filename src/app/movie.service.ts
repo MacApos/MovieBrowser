@@ -1,7 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpResponse} from "@angular/common/http";
 import {environment} from "../environments/environment";
-import {catchError, forkJoin, filter, map, tap, EMPTY} from "rxjs";
+import {catchError, EMPTY, filter, forkJoin, map, tap} from "rxjs";
 import {CategoryPath, LanguageCode, MOVIE_CATEGORY, PAGE_NOT_FOUND, QueryParams} from "./constants";
 import {RouterService} from "./router.service";
 
@@ -15,8 +15,8 @@ export class MovieService {
     routerService = inject(RouterService);
     baseUrl = "https://api.themoviedb.org/3";
     baseParams = "/movie?include_adult=false&include_video=false";
-    searchUrl = "/search";
     discoverUrl = "/discover";
+    searchUrl = "/search";
     movieDetailsUrl = "/movie";
 
     imageUrl = "https://image.tmdb.org/t/p";
@@ -29,9 +29,9 @@ export class MovieService {
         return path ? `${this.imageUrl}/w500${path}` : "/img/poster_unavailable.svg";
     }
 
-    getMovies(category: string, params: QueryParams = {}) {
+    getMovies(category: CategoryPath, params: QueryParams = {}) {
         let httpParams = new HttpParams({
-            fromString: MOVIE_CATEGORY[category as CategoryPath].params
+            fromString: MOVIE_CATEGORY[category].params
         });
         for (const [key, value] of Object.entries(params)) {
             if (!httpParams.has(key) && value) {
@@ -78,22 +78,25 @@ export class MovieService {
         const minutes = Math.floor(runtime % 60);
         const result: Record<string, any> = {
             genres: response["genres"].map((genre: Record<string, any>) => genre["name"]).join(", "),
-            production_countries: response["production_countries"].map((country: Record<string, any>) => country["name"]),
+            production_countries: response["production_countries"]
+                .map((country: Record<string, any>) => country["name"]).join(", "),
             runtime: [hours ? `${hours}h` : '', minutes ? `${minutes}m` : ''].filter(Boolean).join(' ')
         };
-        return {...response, ...result};
+    return {...response, ...result};
     };
 
     mapMovieCredits: MapResponseFn = (response) => {
         const result: Record<string, any> = {
             cast: response["cast"]
-                .filter((member: Record<string, any>) => member["known_for_department"] === "Acting" && member["order"] < 3)
-                .map((member: Record<string, any>) => [member["name"], member["character"]].filter(Boolean).join(" - "))
-                .join(", "),
+                .filter((member: Record<string, any>) =>
+                    member["known_for_department"] === "Acting" && member["order"] < 3)
+                .map((member: Record<string, any>) => [member["name"], member["character"]].filter(Boolean)
+                    .join(" - ")),
             director: response["crew"]
                 .filter((member: Record<string, any>) => member["job"] === "Director")
                 .map((member: Record<string, any>) => member["name"])
         };
+        Object.entries(result).forEach(([key, value]) => result[key] = value.join(", "))
         return result;
     };
 
@@ -108,16 +111,20 @@ export class MovieService {
                 return EMPTY;
             }),
             map((response: HttpResponse<Record<string, any>>) => response.body),
+            filter((value) => value != null),
             tap(value => {
+                if (!value["total_pages"]) {
+                    return;
+                }
                 const page = Number(params.get("page"));
-                const totalPages = value?.["total_pages"];
-                if (!value || totalPages && page > Math.min(30, totalPages)) {
+                const totalPages = Math.min(30, Number(value["total_pages"]));
+                if (page > totalPages) {
                     this.routerService.navigate([PAGE_NOT_FOUND]);
                     return EMPTY;
                 }
+                value["total_pages"] = totalPages;
                 return value;
             }),
-            filter((value) => value != null),
             map(mapResponse),
         );
     }

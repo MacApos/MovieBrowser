@@ -18,24 +18,23 @@ import {TranslatePipe} from "@ngx-translate/core";
         TranslatePipe
     ],
     template: `
-        <div class="position-relative d-flex justify-content-start" id="navbar">
+        <div class="position-relative d-flex justify-content-center" id="navbar-container">
             <nav class="navbar bg-body-tertiary rounded-top-3 z-2 p-2">
-                <a class="position-relative" href="#">
-                    <img src="/img/logo.svg" alt="Logo" height="{{ height }}" class="position-absolute scale"
-                         [ngStyle]="style" id="logo"/>
-                </a>
-                <div class="d-flex justify-content-between align-items-center w-50">
-                    <app-mode-toggle/>
-                    <app-language-change language="en"/>
-                    <app-language-change language="pl"/>
-                    <div class="w-60">
-                        <app-search-bar/>
+                    <a  href="#">
+                        <img src="/img/logo.svg" alt="Logo" class="scale" height="130"/>
+                    </a>
+                <div id="navbar-elements" class="d-flex">
+                    <div class="d-flex justify-content-between align-items-center gap-2" id="navbar-option">
+                        <app-mode-toggle/>
+                        <app-language-change language="en"/>
+                        <app-language-change language="pl"/>
                     </div>
+                    <app-search-bar id="search-bar"/>
                 </div>
             </nav>
 
             <ng-template #button let-category="category">
-                <button class="w-100 btn btn-info rounded-5"
+                <button class="btn btn-info category-button w-100 rounded-5"
                         (click)="onCategoryChange(category)">
                     {{ "categoryPath." + category.path | translate }}
                 </button>
@@ -80,8 +79,6 @@ export class NavBarComponent {
     routerService = inject(RouterService);
     router = inject(Router);
 
-    height = 130;
-    style = {top: `-${this.height / 2}px`};
     movieCategory = Object.values(MOVIE_CATEGORY);
     middleIndex = this.movieCategory.length / 2;
 

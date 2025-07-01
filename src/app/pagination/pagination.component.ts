@@ -22,7 +22,7 @@ import {ActivatedRoute} from "@angular/router";
                             </div>
                         </div>
                     </ng-template>
-
+                    
                     <ng-container [ngTemplateOutlet]="chevron"
                                   [ngTemplateOutletContext]="{
                               width:40,
@@ -70,8 +70,7 @@ import {ActivatedRoute} from "@angular/router";
 export class PaginationComponent implements DoCheck {
     window = inject(WINDOW);
 
-    maxPage = input.required<number, number>(
-        {transform: (value) => Math.min(value, 30)});
+    maxPage = input.required<number>();
     activePage = input.required<number>();
     range!: number;
     pagination!: number[];
@@ -115,9 +114,8 @@ export class PaginationComponent implements DoCheck {
             this.pagination = Array.from({length}, (_: any, i: number) => i + 1);
             return;
         }
-        const end = Math.ceil(active / range) * range;
-        const start = end - range + 1;
-        this.pagination = Array.from({length: range}, (_: any, i: number) => start + i);
+        const start = Math.floor((active - 1) / range) * range;
+        this.pagination = Array.from({length: Math.min(length - start, range)}, (_: any, i: number) => start + 1 + i);
     }
 }
 

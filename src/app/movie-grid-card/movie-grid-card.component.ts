@@ -7,7 +7,7 @@ import {LinkImgComponent} from "../link-img/link-img.component";
         LinkImgComponent,
     ],
     template: `
-        <div class="card scale flex-column h-100" >
+        <div class="card scale flex-column h-100">
             <app-link-img [movieId]="movie()['id']" [posterPath]="movie()['poster_path']" [redirect]="true"/>
             <div class="card-body d-flex flex-column justify-content-between">
                 <h4 class="card-title">

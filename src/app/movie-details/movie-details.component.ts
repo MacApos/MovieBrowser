@@ -11,7 +11,7 @@ import {RouterService} from "../router.service";
     ],
     template: `
         @if (movie && recommendation) {
-            <app-movie-list-card [movie]="movie" [recommendation]="recommendation"/>
+            <app-movie-list-card [movie]="movie" [recommendation]="recommendation" id="movie-list"/>
         } @else {
             <div>spinner</div>
         }

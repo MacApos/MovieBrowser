@@ -26,7 +26,7 @@ import {NgClass} from "@angular/common";
                 <div class="col px-0">
                     <div class="card-body d-flex flex-column justify-content-between align-items-start p-3"
                          [ngClass]="showDetails ? 'gap-2' : 'gap-3'">
-                        <div class="d-flex flex-column" id="movie-title">
+                        <div class="d-flex flex-column gap-1">
                             <h3 class="card-title">
                                 {{ movie()["title"] }}
                             </h3>
@@ -37,20 +37,23 @@ import {NgClass} from "@angular/common";
                             </h4>
                         </div>
                         @if (showDetails) {
-                            @if (movie()["genres"]) {
-                                <p>{{ "movie.genres" | translate }} : {{ movie()["genres"] }}</p>
+                            @if (movie()["director"]) {
+                                <p>{{ "movie.director" | translate }}: {{ movie()["director"] }}</p>
                             }
                             @if (movie()["cast"]) {
                                 <p>{{ "movie.cast" | translate }}: {{ movie()["cast"] }}</p>
                             }
-                            @if (movie()["director"]) {
-                                <p>{{ "movie.director" | translate }}: {{ movie()["director"] }}</p>
+                            @if (movie()["production_countries"]) {
+                                <p>{{ "movie.production_countries" | translate }} : {{ movie()["production_countries"] }}</p>
+                            }
+                            @if (movie()["genres"]) {
+                                <p>{{ "movie.genres" | translate }} : {{ movie()["genres"] }}</p>
                             }
                             @if (movie()["runtime"]) {
                                 <p>{{ "movie.runtime" | translate }}: {{ movie()["runtime"] }}</p>
                             }
                         }
-                        <p class="card-text">
+                        <p class="card-text text-align">
                             {{ movie()["overview"] }}
                         </p>
                         <p>
