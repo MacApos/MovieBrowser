@@ -1,4 +1,4 @@
-import {Component, effect, inject, input, OnChanges, OnInit} from "@angular/core";
+import {Component, effect, inject, input, OnChanges} from "@angular/core";
 import {PaginationComponent} from "../pagination/pagination.component";
 import {OptionDropdownComponent} from "../option-dropdown/option-dropdown.component";
 import {ListComponent} from "../list/list.component";

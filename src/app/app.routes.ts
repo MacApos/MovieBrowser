@@ -2,7 +2,7 @@ import {Route, Routes} from '@angular/router';
 import {HeaderLayoutComponent} from "./header-layout/header-layout.component";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {PAGE_NOT_FOUND, SEARCH_PAGE, MOVIE_CATEGORY, MOVIE_DETAILS_PAGE, START_PAGE, DEFAULT_LANGUAGE} from "./constants";
-import {matchGuard, matchGuardNotFound} from "./match.guard";
+import {matchGuard} from "./match.guard";
 
 function redirectParams(path: string, redirectTo: string, pathMatch = "full") {
     const route: Record<string, string> = {path, redirectTo, pathMatch};
@@ -61,7 +61,6 @@ export const routes: Routes = [
             },
             {
                 path: "**",
-                canMatch: [matchGuardNotFound],
                 component: PageNotFoundComponent
             },
         ]
