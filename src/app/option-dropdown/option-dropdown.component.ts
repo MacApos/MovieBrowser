@@ -1,4 +1,4 @@
-import {Component, effect, inject, input, OnChanges} from '@angular/core';
+import {Component, effect, HostListener, inject, input, OnChanges} from '@angular/core';
 import {RouterService} from "../router.service";
 import {CategoryPath, Display, MOVIE_CATEGORY, SortCriterion, SortDirection} from "../constants";
 import {ActivatedRoute} from '@angular/router';
@@ -40,7 +40,7 @@ import {StorageService} from "../storage.service";
                         @if (showCriteria) {
                             <div class="position-absolute end-100 bottom-0 d-flex flex-column justify-content-between
                              m-0 overflow-hidden" id="sort-option-container" [ngStyle]="sortOptionContainerStyle"
-                                 (transitioncancel)="onTransitionCancel()"
+                                 (transitioncancel)="onTransitionCancel($event)"
                                  (transitionend)="onTransitionEnded($event)">
                                 @for (criterion of sortCriteria; track criterion) {
                                     <button class="btn px-2 w-100 btn-warning" id="sort-criterion"
@@ -75,7 +75,7 @@ export class OptionDropdownComponent implements OnChanges {
     activatedRoute = inject(ActivatedRoute);
     storageService = inject(StorageService);
 
-    display!: Display;
+    display!: string;
     sortCriteria!: SortCriterion[];
     showCriteria!: boolean;
     spanRotation = 0;
@@ -89,8 +89,13 @@ export class OptionDropdownComponent implements OnChanges {
 
     constructor() {
         effect(() => {
-            this.display = this.storageService.getSignal("display")  === Display.list ? Display.grid : Display.list;
+            this.display = this.storageService.getSignal("display") === Display.list ? Display.grid : Display.list;
         });
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onWindowResize() {
+        console.log(this.containerLeft);
     }
 
     ngOnChanges(): void {
@@ -121,7 +126,7 @@ export class OptionDropdownComponent implements OnChanges {
     }
 
     onDisplayClick() {
-        this.storageService.setSignal("display",this.display);
+        this.storageService.setSignal("display", this.display as Display);
     }
 
     onOptionContainerMouseEnter() {
@@ -130,7 +135,7 @@ export class OptionDropdownComponent implements OnChanges {
     }
 
     onOptionContainerMouseLeave() {
-        if (!this.transitionEnded) {
+        if (!this.overflow ) {
             this.overflow = false;
             this.dropdownHeight = 0;
         }
@@ -138,6 +143,7 @@ export class OptionDropdownComponent implements OnChanges {
     }
 
     onSortOptionMouseEnter() {
+        // at this point sort option has been touched and its container will be hidden only after both transition end
         this.overflow = true;
         const length = this.sortCriteria.length;
         this.containerHeight = length * 64 + Math.max(0, length - 1) * 12;
@@ -147,8 +153,10 @@ export class OptionDropdownComponent implements OnChanges {
         this.containerHeight = 64;
     }
 
-    onTransitionCancel() {
-        this.transitionEnded = true;
+    onTransitionCancel($event: TransitionEvent) {
+        if (!this.transitionEnded && $event.propertyName == "height") {
+            this.transitionEnded = true;
+        }
     }
 
     onTransitionEnded($event: TransitionEvent) {
@@ -157,11 +165,11 @@ export class OptionDropdownComponent implements OnChanges {
             this.transitionEnded = true;
         }
 
-        // at this point second transition started
+        // at this point second transition ended
         if (this.transitionEnded && $event.propertyName === "width") {
             this.transitionEnded = false;
+            this.overflow = false;
             if (this.containerLeft) {
-                this.overflow = false;
                 this.dropdownHeight = 0;
             }
         }

@@ -441,7 +441,7 @@ a.card {
 #sort-option:hover {
     #sort-option-container {
         width: 250px;
-        transition: height 1.3s 1.3s, width 1.3s 0s;
+        transition: height 0.3s 0.3s, width 0.3s 0s;
     }
 }
 
