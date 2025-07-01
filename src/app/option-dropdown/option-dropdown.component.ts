@@ -1,4 +1,4 @@
-import {Component, effect, HostListener, inject, input, OnChanges} from '@angular/core';
+import {Component, effect, inject, input, OnChanges} from '@angular/core';
 import {RouterService} from "../router.service";
 import {CategoryPath, Display, MOVIE_CATEGORY, SortCriterion, SortDirection} from "../constants";
 import {ActivatedRoute} from '@angular/router';
@@ -75,7 +75,7 @@ export class OptionDropdownComponent implements OnChanges {
     activatedRoute = inject(ActivatedRoute);
     storageService = inject(StorageService);
 
-    display!: string;
+    display!: Display;
     sortCriteria!: SortCriterion[];
     showCriteria!: boolean;
     spanRotation = 0;
@@ -91,11 +91,6 @@ export class OptionDropdownComponent implements OnChanges {
         effect(() => {
             this.display = this.storageService.getSignal("display") === Display.list ? Display.grid : Display.list;
         });
-    }
-
-    @HostListener('window:resize', ['$event'])
-    onWindowResize() {
-        console.log(this.containerLeft);
     }
 
     ngOnChanges(): void {
@@ -126,7 +121,7 @@ export class OptionDropdownComponent implements OnChanges {
     }
 
     onDisplayClick() {
-        this.storageService.setSignal("display", this.display as Display);
+        this.storageService.setSignal("display", this.display);
     }
 
     onOptionContainerMouseEnter() {

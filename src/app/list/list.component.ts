@@ -1,4 +1,4 @@
-import {Component, inject, input, OnChanges, OnInit,} from '@angular/core';
+import {Component, inject, input, OnInit,} from '@angular/core';
 import {Display, LanguageCode} from "../constants";
 import {RouterService} from "../router.service";
 import {MovieGridCardComponent} from "../movie-grid-card/movie-grid-card.component";
@@ -33,11 +33,10 @@ export class ListComponent implements OnInit {
     routerService = inject(RouterService);
 
     language!: LanguageCode;
+    protected readonly Display = Display;
 
     ngOnInit(): void {
         this.language = this.routerService.getLanguageSegment();
         this.routerService.scrollToTop();
     }
-
-    protected readonly Display = Display;
 }

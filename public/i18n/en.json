@@ -20,5 +20,8 @@
     "director": "Director",
     "runtime": "Runtime",
     "noVotes": "No votes yet"
+  },
+  "recommendation": {
+    "similar": "Similar"
   }
 }

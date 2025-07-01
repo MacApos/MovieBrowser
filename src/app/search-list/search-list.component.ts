@@ -1,4 +1,4 @@
-import {Component, effect, inject, input, Input, OnChanges, signal} from '@angular/core';
+import {Component,inject, input, OnChanges} from '@angular/core';
 import {MovieService} from "../movie.service";
 import {ListComponent} from "../list/list.component";
 import {Display, LanguageCode} from "../constants";
@@ -27,10 +27,12 @@ import {SpinnerComponent} from "../spinner/spinner.component";
 })
 export class SearchListComponent implements OnChanges {
     movieService = inject(MovieService);
-    results!: any;
 
     language = input.required<LanguageCode>();
     query = input.required({transform: (value: string) => value ?? ""});
+
+    results!: any;
+    protected readonly Display = Display;
 
     ngOnChanges(): void {
         const query = this.query();
@@ -42,5 +44,4 @@ export class SearchListComponent implements OnChanges {
         }
     }
 
-    protected readonly Display = Display;
 }

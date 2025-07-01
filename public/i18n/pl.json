@@ -20,5 +20,8 @@
     "director": "Reżyser",
     "runtime": "Czas trwania",
     "noVotes": "Brak ocen"
+  },
+  "recommendation": {
+    "similar": "Podobne"
   }
 }

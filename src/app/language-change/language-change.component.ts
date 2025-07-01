@@ -16,8 +16,10 @@ import {TranslateService} from "@ngx-translate/core";
 })
 export class LanguageChangeComponent implements OnInit {
     language = input.required<LanguageCode>();
+
     routerService = inject(RouterService);
     translateService = inject(TranslateService)
+
     languageDetails!: Record<string, string>;
 
     ngOnInit(): void {
@@ -29,8 +31,8 @@ export class LanguageChangeComponent implements OnInit {
         const queryParams = this.routerService.getQueryParams();
         urlSegments[0].path = this.language();
         this.translateService.use(this.language())
+        console.log(urlSegments);
         this.routerService.navigate(urlSegments.map(s => s.path), {queryParams});
     }
-
 
 }

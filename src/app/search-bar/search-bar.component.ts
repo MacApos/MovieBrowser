@@ -38,7 +38,7 @@ export class SearchBarComponent implements OnInit {
             return;
         }
         this.routerService.navigate(["/", language, SEARCH_PAGE], {
-            queryParams: {query, page: 1},
+            queryParams: {query},
             replaceUrl: category === SEARCH_PAGE
         });
     }

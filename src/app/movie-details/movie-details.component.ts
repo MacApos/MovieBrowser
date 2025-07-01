@@ -20,13 +20,14 @@ import {SpinnerComponent} from "../spinner/spinner.component";
     `,
 })
 export class MovieDetailsComponent implements OnChanges {
-    movieService = inject(MovieService);
-    routerService = inject(RouterService);
-    movie!: Record<string, any>;
-    recommendation!: any[];
-
     language = input.required<LanguageCode>();
     movieId = input.required<number>();
+
+    movieService = inject(MovieService);
+    routerService = inject(RouterService);
+
+    movie!: Record<string, any>;
+    recommendation!: any[];
 
     ngOnChanges(): void {
         this.routerService.scrollToTop();
@@ -37,5 +38,4 @@ export class MovieDetailsComponent implements OnChanges {
             this.recommendation = response[2];
         });
     }
-
 }

@@ -1,11 +1,10 @@
-import {Component, inject} from '@angular/core';
+import {afterEveryRender, Component, inject, signal} from '@angular/core';
 import {ModeToggleComponent} from "../mode-toggle/mode-toggle.component";
 import {CommonModule} from "@angular/common";
 import {LanguageChangeComponent} from "../language-change/language-change.component";
 import {SearchBarComponent} from "../search-bar/search-bar.component";
-import {CategoryDetails, MOVIE_CATEGORY} from "../constants";
+import {CategoryDetails, CategoryPath, MOVIE_CATEGORY} from "../constants";
 import {RouterService} from "../router.service";
-import {Router} from "@angular/router";
 import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
@@ -20,9 +19,9 @@ import {TranslatePipe} from "@ngx-translate/core";
     template: `
         <div class="position-relative d-flex justify-content-center" id="navbar-container">
             <nav class="navbar bg-body-tertiary rounded-top-3 z-2 p-2">
-                    <a  href="#">
-                        <img src="/img/logo.svg" alt="Logo" class="scale" height="130"/>
-                    </a>
+                <a href="#">
+                    <img src="/img/logo.svg" alt="Logo" class="scale" height="130"/>
+                </a>
                 <div id="navbar-elements" class="d-flex">
                     <div class="d-flex justify-content-between align-items-center gap-2" id="navbar-option">
                         <app-mode-toggle/>
@@ -34,7 +33,10 @@ import {TranslatePipe} from "@ngx-translate/core";
             </nav>
 
             <ng-template #button let-category="category">
-                <button class="btn btn-info category-button w-100 rounded-5"
+                <button class="btn rounded-pill w-100 category-button"
+                        [ngClass]="{
+                        'btn-info':category.path !== activeCategory(),
+                        'btn-warning':category.path === activeCategory()}"
                         (click)="onCategoryChange(category)">
                     {{ "categoryPath." + category.path | translate }}
                 </button>
@@ -77,13 +79,21 @@ import {TranslatePipe} from "@ngx-translate/core";
 })
 export class NavBarComponent {
     routerService = inject(RouterService);
-    router = inject(Router);
+
+    activeCategory = signal<CategoryPath>("now-playing");
 
     movieCategory = Object.values(MOVIE_CATEGORY);
     middleIndex = this.movieCategory.length / 2;
 
+    constructor() {
+        afterEveryRender(() => {
+            this.activeCategory.set(this.routerService.getCategorySegment() as CategoryPath);
+        });
+    }
+
     onCategoryChange(category: CategoryDetails) {
         const language = this.routerService.getLanguageSegment();
-        this.router.navigate(["/", language, category.path, "1"]);
+        this.routerService.navigate(["/", language, category.path, "1"]);
     }
+
 }

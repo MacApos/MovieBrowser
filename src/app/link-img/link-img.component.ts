@@ -1,4 +1,4 @@
-import {Component, inject, input, OnChanges, OnInit} from '@angular/core';
+import {Component, inject, input, OnInit} from '@angular/core';
 import {LanguageCode, MOVIE_DETAILS_PAGE} from "../constants";
 import {RouterLink} from "@angular/router";
 import {MovieService} from "../movie.service";

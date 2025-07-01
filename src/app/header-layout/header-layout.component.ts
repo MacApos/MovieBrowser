@@ -1,7 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {NavBarComponent} from "../nav-bar/nav-bar.component";
-import {ActivatedRoute, Router, RouterOutlet} from "@angular/router";
-import {DEFAULT_LANGUAGE} from "../constants";
+import { RouterOutlet} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
 import {RouterService} from "../router.service";
 
