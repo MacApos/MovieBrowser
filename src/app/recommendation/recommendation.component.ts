@@ -70,15 +70,6 @@ export class RecommendationComponent implements OnChanges {
         };
     }
 
-    @HostListener('window:resize', ['$event'])
-    onWindowResize() {
-        this.setRecommendationArray();
-    }
-
-    onTransitionStart($event: TransitionEvent) {
-        $event.stopPropagation();
-    }
-
     setRecommendationArray() {
         if (!this.window) {
             return;
@@ -99,6 +90,16 @@ export class RecommendationComponent implements OnChanges {
             array.push(this.recommendation().slice(i, i + this.carouselRange));
         }
         this.recommendationArray.set(array);
+    }
+
+
+    @HostListener('window:resize', ['$event'])
+    onWindowResize() {
+        this.setRecommendationArray();
+    }
+
+    onTransitionStart($event: TransitionEvent) {
+        $event.stopPropagation();
     }
 
 }

@@ -21,7 +21,15 @@
     "runtime": "Runtime",
     "noVotes": "No votes yet"
   },
+  "search": {
+    "searchSomething": "Search something first!",
+    "nothingFound": "Sorry, nothing was found"
+  },
   "recommendation": {
     "similar": "Similar"
+  },
+  "pageNotFound": {
+    "message": "Oops! Page not found.<br>The page you're looking for doesn't exist or has been moved.",
+    "goHome": "Go Home"
   }
 }

@@ -23,8 +23,8 @@ export class SearchBarComponent implements OnInit {
     router = inject(Router);
     routerService = inject(RouterService);
     route = inject(ActivatedRoute);
-    query !: string;
 
+    query !: string;
 
     ngOnInit(): void {
         this.route.queryParams.subscribe(queryParams => this.query = queryParams['query']);

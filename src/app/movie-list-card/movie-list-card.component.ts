@@ -73,6 +73,7 @@ import {NgClass} from "@angular/common";
 export class MovieListCardComponent implements OnChanges {
     movie = input.required<Record<string, any>>();
     recommendation = input<Record<string, any>[]>([]);
+
     routerService = inject(RouterService);
 
     showDetails!: boolean;

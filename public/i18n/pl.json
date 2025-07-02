@@ -21,7 +21,15 @@
     "runtime": "Czas trwania",
     "noVotes": "Brak ocen"
   },
+  "search": {
+    "searchSomething": "Najpierw coś wyszukaj!",
+    "nothingFound": "Wybacz, nic nie znaleziono"
+  },
   "recommendation": {
     "similar": "Podobne"
+  },
+  "pageNotFound": {
+    "message": "Oops! Nie znaleziono strony.<br>Strona, której szukasz nie istnieje albo została przenisiona.",
+    "goHome": "Strona główna"
   }
 }

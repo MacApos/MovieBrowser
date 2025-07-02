@@ -1,22 +1,20 @@
 import {Component} from '@angular/core';
+import {TranslatePipe} from "@ngx-translate/core";
 
 @Component({
     selector: 'app-page-not-found',
-    imports: [],
+    imports: [
+        TranslatePipe
+    ],
     template: `
-        <div class="text-theme">
-            <div class="d-flex flex-column justify-content-center align-items-center text-center">
-                <h1 class="display-1 fw-bold mb-4">404!</h1>
-                <p class="mb-2">Oops! Page not found.<br>
-                    The page you're looking for doesn't exist or has been moved.
-                </p>
-                <a href="/" class="btn btn-light rounded-pill">
-                    Go Home
-                </a>
-            </div>
+        <div class="d-flex flex-column justify-content-center align-items-center text-center">
+            <h1 class="display-1 fw-bold mb-3">404!</h1>
+            <p class="mb-2" [innerHTML]="'pageNotFound.message' | translate"></p>
+            <a href="#" class="btn btn-light rounded-pill">
+                {{ 'pageNotFound.goHome' | translate }}
+            </a>
         </div>
     `,
 })
 export class PageNotFoundComponent {
-
 }

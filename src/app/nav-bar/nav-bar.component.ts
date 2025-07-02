@@ -78,9 +78,8 @@ import {TranslatePipe} from "@ngx-translate/core";
     `,
 })
 export class NavBarComponent {
-    routerService = inject(RouterService);
-
     activeCategory = signal<CategoryPath>("now-playing");
+    routerService = inject(RouterService);
 
     movieCategory = Object.values(MOVIE_CATEGORY);
     middleIndex = this.movieCategory.length / 2;
