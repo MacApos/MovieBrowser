@@ -22,7 +22,7 @@ export class MovieService {
     imageUrl = "https://image.tmdb.org/t/p";
     headers = {
         accept: "application/json",
-        Authorization: `Bearer ${environment.API_KEY}`
+        Authorization: `Bearer ${process.env['API_KEY']}`
     };
 
     getImage(path: string) {
