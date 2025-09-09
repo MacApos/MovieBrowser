@@ -1,6 +1,6 @@
 ## About The Project
 
-This project is a simple and interactive application that allows users to browse, search, and view details about films.
+This project is a simple and interactive application that allows users to browse, search, and view details about movies.
 It was built with Angular and Bootstrap to provide a clean and responsive UI.
 
 ## Features
@@ -12,8 +12,13 @@ It was built with Angular and Bootstrap to provide a clean and responsive UI.
 
 ## Technologies
 
-- Angular
-- Bootstrap
+- Angular: 20.0.0
+- Angular CLI: 20.0.0
+- Node.js: 22.12.0
+- NPM: 10.9.0
+- TypeScript: 5.8.3
+- RxJS: 7.8.2
+- Bootstrap: 5.3.5
 
 ## Installation
 
@@ -41,13 +46,13 @@ It was built with Angular and Bootstrap to provide a clean and responsive UI.
   **Path parameters**
     - language: en (default) or pl
     - category: now-playing (default), popular, top-rated or upcoming
-    - page: from 1 to max 30
+    - page: from 1 to 30
 
   **Additional options:**
     - Display results as grid or list
     - Sort by popularity, average vote, or release date
 
-- `/{language}/movie-details/{movieId}` - retrieves a movie by its ID
+- `/{language}/movie-details/{movieId}` - retrieves a movie by its ID.
 - `/{language}/search?query=` - allow searching movies by title.
 
 ## Contact
