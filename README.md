@@ -36,7 +36,7 @@ It was built with Angular and Bootstrap to provide a clean and responsive UI.
 
 ## Endpoints
 - `/{language}/{category}` - by de 
- - language: en or pl
+* language: en or pl
  - category: now-playing, popular, top-rated or upcoming
 
 ## Contact
