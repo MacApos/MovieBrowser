@@ -3,6 +3,7 @@ import {HttpClient, HttpParams, HttpResponse} from "@angular/common/http";
 import {catchError, EMPTY, filter, forkJoin, map, tap} from "rxjs";
 import {CategoryPath, LanguageCode, MOVIE_CATEGORY, PAGE_NOT_FOUND, QueryParams} from "./constants";
 import {RouterService} from "./router.service";
+import {environment} from "../environments/environment";
 
 type MapResponseFn = (response: Record<string, any>) => any;
 
@@ -21,7 +22,7 @@ export class MovieService {
     imageUrl = "https://image.tmdb.org/t/p";
     headers = {
         accept: "application/json",
-        Authorization: `Bearer ${process.env['API_KEY']}`
+        Authorization: `Bearer ${environment.API_KEY}`
     };
 
     getImage(path: string) {
