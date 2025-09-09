@@ -1,6 +1,5 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpResponse} from "@angular/common/http";
-import {environment} from "../environments/environment";
 import {catchError, EMPTY, filter, forkJoin, map, tap} from "rxjs";
 import {CategoryPath, LanguageCode, MOVIE_CATEGORY, PAGE_NOT_FOUND, QueryParams} from "./constants";
 import {RouterService} from "./router.service";
