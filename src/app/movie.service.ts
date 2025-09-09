@@ -82,7 +82,7 @@ export class MovieService {
                 .map((country: Record<string, any>) => country["name"]).join(", "),
             runtime: [hours ? `${hours}h` : '', minutes ? `${minutes}m` : ''].filter(Boolean).join(' ')
         };
-    return {...response, ...result};
+        return {...response, ...result};
     };
 
     mapMovieCredits: MapResponseFn = (response) => {
@@ -96,7 +96,7 @@ export class MovieService {
                 .filter((member: Record<string, any>) => member["job"] === "Director")
                 .map((member: Record<string, any>) => member["name"])
         };
-        Object.entries(result).forEach(([key, value]) => result[key] = value.join(", "))
+        Object.entries(result).forEach(([key, value]) => result[key] = value.join(", "));
         return result;
     };
 

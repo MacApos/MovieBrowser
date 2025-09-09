@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {NavBarComponent} from "../nav-bar/nav-bar.component";
-import { RouterOutlet} from "@angular/router";
+import {RouterOutlet} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
 import {RouterService} from "../router.service";
 
@@ -21,7 +21,7 @@ import {RouterService} from "../router.service";
         </div>
     `,
 })
-export class HeaderLayoutComponent{
+export class HeaderLayoutComponent {
     routerService = inject(RouterService);
     translateService = inject(TranslateService);
 

@@ -1,4 +1,4 @@
-import {Component,inject, input, OnChanges} from '@angular/core';
+import {Component, inject, input, OnChanges} from '@angular/core';
 import {MovieService} from "../movie.service";
 import {ListComponent} from "../list/list.component";
 import {Display, LanguageCode} from "../constants";
@@ -20,7 +20,7 @@ import {TranslateDirective} from "@ngx-translate/core";
                 <h1 [translate]="translate" class="display-6"></h1>
             </div>
         </ng-template>
-        
+
         @if (query().length < 3) {
             <ng-container [ngTemplateOutlet]="message"
                           [ngTemplateOutletContext]="{translate: 'search.searchSomething'}"/>

@@ -27,8 +27,9 @@ export class ButtonComponent implements OnInit {
     icon = input.required<string>();
     fill = input(false);
     dimensions = input([0, 0]);
-    action = input<() => void>(() => {});
-    attributes = input<{ [key: string]: string | any}>({});
+    action = input<() => void>(() => {
+    });
+    attributes = input<{ [key: string]: string | any }>({});
 
     x!: number;
     y!: number;

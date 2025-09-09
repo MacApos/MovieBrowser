@@ -22,7 +22,7 @@ import {TranslatePipe} from "@ngx-translate/core";
         </div>
     `,
 })
-export class RatingComponent{
+export class RatingComponent {
     voteCount = input.required<number>();
     voteAverage = input.required({
         transform: (value: number) => Math.round(value * 10) / 10

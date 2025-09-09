@@ -130,7 +130,7 @@ export class OptionDropdownComponent implements OnChanges {
     }
 
     onOptionContainerMouseLeave() {
-        if (!this.transitionEnded ) {
+        if (!this.transitionEnded) {
             this.overflow = false;
             this.dropdownHeight = 0;
         }
@@ -140,7 +140,7 @@ export class OptionDropdownComponent implements OnChanges {
     onSortOptionMouseEnter() {
         // at this point sort option has been touched and its container will be hidden only after both transition end
         this.overflow = true;
-        this.transitionEnded=false;
+        this.transitionEnded = false;
         const length = this.sortCriteria.length;
         this.containerHeight = length * 64 + Math.max(0, length - 1) * 12;
     }

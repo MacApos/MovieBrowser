@@ -26,16 +26,17 @@
 [data-bs-theme=light], [data-bs-theme=dark] {
     --dark-border-subtle-fixed: #343a40;
 }
+
 [data-bs-theme=light] {
-    --theme-color:#000;
+    --theme-color: #000;
     --bs-theme-rgb: 233, 233, 232;
-    --bs-opposite-theme-rgb:  33, 37, 41;
+    --bs-opposite-theme-rgb: 33, 37, 41;
     --body-background-color: linear-gradient(90deg, #56c7c9, #5e62b0, #c25184);
 }
 
 [data-bs-theme=dark] {
-    --theme-color:#fff;
-    --theme-opposite-color:#000;
+    --theme-color: #fff;
+    --theme-opposite-color: #000;
     --bs-theme-rgb: 33, 37, 41;
     --bs-opposite-theme-rgb: 233, 233, 232;
     --body-background-color: linear-gradient(90deg, #33b7e2, #323796, #dc307c);

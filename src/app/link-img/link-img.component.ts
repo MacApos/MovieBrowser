@@ -24,7 +24,7 @@ export class LinkImgComponent implements OnInit {
     movieService = inject(MovieService);
     routerService = inject(RouterService);
 
-    language!:LanguageCode;
+    language!: LanguageCode;
     protected readonly MOVIE_DETAILS = MOVIE_DETAILS_PAGE;
 
     ngOnInit(): void {

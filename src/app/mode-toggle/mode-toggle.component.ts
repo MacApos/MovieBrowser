@@ -1,4 +1,4 @@
-import { Component, inject} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {StorageService} from "../storage.service";
 import {ButtonComponent} from "../button/button.component";
 import {Theme} from "../constants";

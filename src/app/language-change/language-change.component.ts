@@ -18,7 +18,7 @@ export class LanguageChangeComponent implements OnInit {
     language = input.required<LanguageCode>();
 
     routerService = inject(RouterService);
-    translateService = inject(TranslateService)
+    translateService = inject(TranslateService);
 
     languageDetails!: Record<string, string>;
 
@@ -30,7 +30,7 @@ export class LanguageChangeComponent implements OnInit {
         const urlSegments = this.routerService.getUrlSegments();
         const queryParams = this.routerService.getQueryParams();
         urlSegments[0].path = this.language();
-        this.translateService.use(this.language())
+        this.translateService.use(this.language());
         this.routerService.navigate(urlSegments.map(s => s.path), {queryParams});
     }
 

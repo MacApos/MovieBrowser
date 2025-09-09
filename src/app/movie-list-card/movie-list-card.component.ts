@@ -44,7 +44,8 @@ import {NgClass} from "@angular/common";
                                 <p>{{ "movie.cast" | translate }}: {{ movie()["cast"] }}</p>
                             }
                             @if (movie()["production_countries"]) {
-                                <p>{{ "movie.production_countries" | translate }} : {{ movie()["production_countries"] }}</p>
+                                <p>{{ "movie.production_countries" | translate }}
+                                    : {{ movie()["production_countries"] }}</p>
                             }
                             @if (movie()["genres"]) {
                                 <p>{{ "movie.genres" | translate }} : {{ movie()["genres"] }}</p>
