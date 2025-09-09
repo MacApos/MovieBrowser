@@ -17,7 +17,7 @@ import {TranslatePipe} from "@ngx-translate/core";
     template: `
         <div class="row mx-0 mb-3">
             <div class="col d-flex flex-column px-2">
-                <h3 class="ps-1">{{ "movie.genres" | translate }}</h3>
+                <h3 class="ps-1">{{ "recommendation.similar" | translate }}</h3>
                 <div id="recommendationCarousel" class="carousel slide rounded-2 w-100">
                     <div class="carousel-inner h-100" [ngStyle]="{overflow:overflow ? 'visible' : 'hidden'}"
                          (transitionstart)="transitionEnded=false" (transitionend)="transitionEnded=true">

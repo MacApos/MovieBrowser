@@ -35,9 +35,14 @@ It was built with Angular and Bootstrap to provide a clean and responsive UI.
    ```
 
 ## Endpoints
-- `/{language}/{category}` - by de 
-* language: en or pl
- - category: now-playing, popular, top-rated or upcoming
+
+- `/{language}/{category}/{page}` - lets users explore a paginated list of movies. Available path parameters are:
+    - language: en (default) or pl
+    - category: now-playing (default), popular, top-rated or upcoming
+    - page: from 1 to max 30
+Results can be displayed as grid or list and can be sorted by popularity, average vote or release date.
+- `/{language}/movie-details/{movieId}` - gets film by ID
+- `/{language}/search?query=` - allow searching movies by title.
 
 ## Contact
 
