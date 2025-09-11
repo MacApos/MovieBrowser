@@ -1,4 +1,4 @@
-import {Component, inject, input, OnInit} from '@angular/core';
+import {Component, inject, input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {LanguageCode, MOVIE_DETAILS_PAGE} from "../constants";
 import {RouterLink} from "@angular/router";
 import {MovieService} from "../movie.service";
@@ -16,7 +16,7 @@ import {RouterService} from "../router.service";
         </a>
     `,
 })
-export class LinkImgComponent implements OnInit {
+export class LinkImgComponent implements OnChanges {
     movieId = input.required<string>();
     posterPath = input.required<string>();
     redirect = input.required<boolean>();
@@ -27,7 +27,7 @@ export class LinkImgComponent implements OnInit {
     language!: LanguageCode;
     protected readonly MOVIE_DETAILS = MOVIE_DETAILS_PAGE;
 
-    ngOnInit(): void {
+    ngOnChanges(): void {
         this.language = this.routerService.getLanguageSegment();
     }
 }

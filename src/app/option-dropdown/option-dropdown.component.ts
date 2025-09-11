@@ -40,8 +40,9 @@ import {StorageService} from "../storage.service";
                         @if (showCriteria) {
                             <div class="position-absolute end-100 bottom-0 d-flex flex-column justify-content-between
                              m-0 overflow-hidden" id="sort-option-container" [ngStyle]="sortOptionContainerStyle"
-                                 (transitioncancel)="onTransitionCancel($event)"
-                                 (transitionend)="onTransitionEnded($event)">
+                                 (transitionend)="onTransitionEnded($event)"
+                                 (transitioncancel)="onTransitionCanceled($event)"
+                            >
                                 @for (criterion of sortCriteria; track criterion) {
                                     <button class="btn px-2 w-100 btn-warning" id="sort-criterion"
                                             (click)="onSortingChange(criterion)">
@@ -83,9 +84,11 @@ export class OptionDropdownComponent implements OnChanges {
     dropdownHeight = 0;
     baseHeight = 68;
     padding = 16;
+
     overflow = false;
     containerLeft = false;
-    transitionEnded = false;
+    sortEntered = false;
+    sortLeft = false;
 
     constructor() {
         effect(() => {
@@ -124,23 +127,27 @@ export class OptionDropdownComponent implements OnChanges {
         this.storageService.setSignal("display", this.display);
     }
 
+    resetDropdown() {
+        this.dropdownHeight = 0;
+        this.containerLeft = false;
+    }
+
     onOptionContainerMouseEnter() {
         this.dropdownHeight = this.baseHeight * 2.5 + this.padding * 2.5;
         this.containerLeft = false;
     }
 
     onOptionContainerMouseLeave() {
-        if (!this.transitionEnded) {
-            this.overflow = false;
-            this.dropdownHeight = 0;
+        if (!this.sortEntered && this.sortLeft) {
+            this.resetDropdown();
         }
         this.containerLeft = true;
     }
 
     onSortOptionMouseEnter() {
-        // at this point sort option has been touched and its container will be hidden only after both transition end
+        this.sortEntered = true;
+        this.sortLeft = false;
         this.overflow = true;
-        this.transitionEnded = false;
         const length = this.sortCriteria.length;
         this.containerHeight = length * 64 + Math.max(0, length - 1) * 12;
     }
@@ -149,25 +156,27 @@ export class OptionDropdownComponent implements OnChanges {
         this.containerHeight = 64;
     }
 
-    onTransitionCancel($event: TransitionEvent) {
-        if (!this.transitionEnded && $event.propertyName == "height") {
-            this.transitionEnded = true;
+    onTransitionCanceled($event: TransitionEvent) {
+        if ($event.propertyName == "width") {
+            this.sortLeft = true;
         }
     }
 
     onTransitionEnded($event: TransitionEvent) {
-        // at this point first transition ended
-        if (!this.transitionEnded && $event.propertyName == "height") {
-            this.transitionEnded = true;
+        if ($event.propertyName == "height") {
+            return;
         }
 
-        // at this point second transition ended
-        if (this.transitionEnded && $event.propertyName === "width") {
-            this.transitionEnded = false;
-            this.overflow = false;
-            if (this.containerLeft) {
-                this.dropdownHeight = 0;
-            }
+        if (this.containerLeft) {
+            this.resetDropdown();
+            this.containerLeft = false;
+        }
+
+        if (this.sortLeft) {
+            this.sortEntered = false;
+            this.sortLeft = false;
+        } else {
+            this.sortLeft = true;
         }
     }
 
@@ -181,4 +190,5 @@ export class OptionDropdownComponent implements OnChanges {
             relativeTo: this.activatedRoute
         });
     }
+
 }
