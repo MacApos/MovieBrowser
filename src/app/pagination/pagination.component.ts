@@ -22,7 +22,7 @@ import {ActivatedRoute} from "@angular/router";
                             </div>
                         </div>
                     </ng-template>
-                    
+
                     <ng-container [ngTemplateOutlet]="chevron"
                                   [ngTemplateOutletContext]="{
                               width:40,
