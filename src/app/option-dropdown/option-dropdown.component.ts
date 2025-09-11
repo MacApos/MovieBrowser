@@ -88,7 +88,6 @@ export class OptionDropdownComponent implements OnChanges {
     overflow = false;
     containerLeft = false;
     sortEntered = false;
-    sortLeft = false;
 
     constructor() {
         effect(() => {
@@ -127,11 +126,6 @@ export class OptionDropdownComponent implements OnChanges {
         this.storageService.setSignal("display", this.display);
     }
 
-    resetDropdown() {
-        this.dropdownHeight = 0;
-        this.containerLeft = false;
-    }
-
     onOptionContainerMouseEnter() {
         this.dropdownHeight = this.baseHeight * 2.5 + this.padding * 2.5;
         this.containerLeft = false;
@@ -156,28 +150,36 @@ export class OptionDropdownComponent implements OnChanges {
         this.containerHeight = 64;
     }
 
+
     onTransitionCanceled($event: TransitionEvent) {
         if ($event.propertyName == "width") {
             this.sortLeft = true;
         }
     }
 
+    sortLeft = false;
+
     onTransitionEnded($event: TransitionEvent) {
         if ($event.propertyName == "height") {
             return;
         }
 
-        if (this.containerLeft) {
+        if (this.containerLeft && $event.propertyName == "width") {
             this.resetDropdown();
             this.containerLeft = false;
         }
-
         if (this.sortLeft) {
             this.sortEntered = false;
             this.sortLeft = false;
-        } else {
+        }
+        if ($event.propertyName == "width") {
             this.sortLeft = true;
         }
+    }
+
+    resetDropdown() {
+        this.overflow = false;
+        this.dropdownHeight = 0;
     }
 
     onSortingChange(criterion: string) {
